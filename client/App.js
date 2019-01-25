@@ -1,30 +1,39 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import Marker from 'react-native-maps';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import Map from './Map.js';
 
 export default class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      viewSection :false
+    }
+  }
+
+  renderBottomComponent() {
+    if(this.state.viewSection) {
+      return (
+      <Map />
+      )
+    }
+  }
+
+buttonPress=()=>{
+    this.setState({viewSection:true})
+}
+
   render() {
     return (
-<MapView
-     provider={PROVIDER_GOOGLE}
-     style={{flex: 1}}
-     region={{
-       latitude: 49.281372,
-       longitude: -123.114542,
-       latitudeDelta: 0.0922,
-       longitudeDelta: 0.0421
-     }}
-     showsUserLocation={true}
-     followsUserLocation = {true}
-   >
-     <MapView.Marker
-           coordinate={{latitude: 49.2834,
-           longitude: -123.1164}}
-           title={"The Keg"}
-           description={"Steak"}
-        />
-   </MapView>
+      <React.Fragment>
+        <View style={styles.container}>
+      <TouchableOpacity onPress={this.buttonPress}>
+          <Text> Click Me!</Text>
+      </TouchableOpacity>
+      </View>
+
+      {this.renderBottomComponent()}
+
+    </React.Fragment>
     );
   }
 }
