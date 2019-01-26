@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import Map from './Map.js';
+import Map from './components/map components/Map.js';
+import Chat from './components/chat components/chat.js';
 
 export default class App extends React.Component {
   constructor() {
@@ -25,11 +26,13 @@ buttonPress=()=>{
   render() {
     return (
       <React.Fragment>
-        <View style={styles.container}>
+        {/* <View style={styles.container}>
       <TouchableOpacity onPress={this.buttonPress}>
           <Text> Click Me!</Text>
       </TouchableOpacity>
-      </View>
+      </View> */}
+
+      <Chat />
 
       {this.renderBottomComponent()}
 
