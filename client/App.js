@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import Map from './components/map components/Map.js';
-import Chat from './components/chat components/chat.js';
+import Group from './components/group components/group.js';
 import Landing from './components/landing components/Landing.js';
+
 
 export default class App extends React.Component {
   constructor() {
@@ -67,17 +67,9 @@ export default class App extends React.Component {
     this.addUser = this.addUser.bind(this);
   }
 
-  renderBottomComponent() {
-    if(this.state.viewSection) {
-      return (
-      <Map />
-      )
-    }
-  }
 
-buttonPress=()=>{
-    this.setState({viewSection:true})
-}
+
+
 
 changeUser = incomingUser =>{
   this.setState({
@@ -100,17 +92,22 @@ addUser =incomingUser =>{
   if(this.state.DefaultComponent)
   return <Landing background={this.state.backgroundImage} users={this.state.users} changeUser={this.changeUser} addUser={this.addUser}/>
  }
+ renderGroupComponent = () => {
+  if(this.state.GroupComponent){
+  return <Group/>
+  }
+ }
+
   render() {
     return (
       <React.Fragment>  
       
       {this.renderDefaultComponent()}
-      {/* {this.renderGroupComponent()} */}
+      {this.renderGroupComponent()}
     </React.Fragment>
     );
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

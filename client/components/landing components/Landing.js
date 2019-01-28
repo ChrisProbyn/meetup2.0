@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Text,  TouchableOpacity, ImageBackground} from 'react-native';
 import Login from "./Login.js";
-import { withTheme } from 'react-native-elements';
+
 
 
 export default class Landing extends Component {
