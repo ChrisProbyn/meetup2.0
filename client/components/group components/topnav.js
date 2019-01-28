@@ -1,10 +1,24 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, {Component} from 'react';
+import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav'
 
-export default class TopNav extends React.Component {
+export default class TopNav extends Component {
     render() {
         return (
-            <View ><Text>top nav</Text></View>
-        );
-    }
+          <NavBar>
+            <NavButton onPress={() => alert('sup')}>
+              <NavButtonText>
+                {"Button"}
+              </NavButtonText>
+            </NavButton>
+            <NavTitle>
+              {"App"}
+            </NavTitle>
+            <NavButton onPress={() => alert('not much')}>
+              <NavButtonText>
+                {"Button"}
+              </NavButtonText>
+            </NavButton>
+          </NavBar>
+        )
+      }
 }

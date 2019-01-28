@@ -6,6 +6,7 @@ import TopNav from './topnav.js';
 import BottomNav from './bottomnav.js';
 import GroupList from './grouplist.js';
 
+
 export default class Group extends React.Component {
   constructor(props) {
     super(props)
@@ -51,7 +52,7 @@ export default class Group extends React.Component {
   render() {
     return (
       <React.Fragment>
-        {/* <TopNav /> */}
+        <TopNav />
         {this.renderDefaultComponent()}
         {this.renderChatComponent()}
         {this.renderMapComponent()}
