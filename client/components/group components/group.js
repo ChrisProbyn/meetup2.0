@@ -4,49 +4,13 @@ import Map from './components/map components/Map.js';
 import Chat from './components/chat components/chat.js';
 
 
-export default class App extends React.Component {
+export default class Group extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       mapSection :false,
       chatSection :false,
       defaultSection :true,
-      backgroundImage: "https://beautifulpixels.com/wp-content/uploads/2018/09/bpxl-iphone-xs-max-wallpaper-1-400x866.jpg",
-      users: [
-        {
-          _id: 1,
-          name: "Alex",
-          email: "example1@gmail.com",
-          password: "123",
-          image: "",
-        },
-        {
-          _id: 2,
-          name: "Bob",
-          email: "example2@gmail.com",
-          password: "456",
-          image: "",
-        },
-        {
-          _id: 3,
-          name: "Chanel",
-          email: "example3@gmail.com",
-          password: "456",
-          image: "",
-        },
-      ],
-      groups: [
-        {
-          _id: 1,
-          group_name: "group 1",
-          users_id: [1,2]
-        },
-        {
-          _id: 2,
-          group_name: "group 2",
-          users_id: [2,3]
-        }
-      ]
     }
   }
 
