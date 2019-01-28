@@ -12,8 +12,8 @@ export default class App extends React.Component {
       viewSection :false,
       backgroundImage: require("./assets/background.png"),
       currentUserID: null,
-      DefaultComponent: true,
-      GroupComponent: false,
+      DefaultComponent: false,
+      GroupComponent: true,
       users: [
         {
           id: 1,
@@ -94,7 +94,7 @@ addUser =incomingUser =>{
  }
  renderGroupComponent = () => {
   if(this.state.GroupComponent){
-  return <Group/>
+  return <Group groups={this.state.groups}/>
   }
  }
 
