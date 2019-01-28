@@ -2,6 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Map from '../map components/Map.js';
 import Chat from '../chat components/chat.js';
+import TopNav from './topnav.js';
+import BottomNav from './bottomnav.js';
+import GroupList from './grouplist.js';
 
 
 export default class Group extends React.Component {
@@ -33,11 +36,7 @@ export default class Group extends React.Component {
   renderDefaultComponent() {
     if(this.state.defaultSection) {
       return (
-        <View style={styles.container}>
-      <TouchableOpacity onPress={this.buttonChatPress}>
-          <Text> Let's Chat!</Text>
-      </TouchableOpacity>
-      </View>
+     <GroupList groups={this.props.groups}/>
       )
     }
   }
@@ -53,9 +52,11 @@ export default class Group extends React.Component {
   render() {
     return (
       <React.Fragment>
-      {this.renderDefaultComponent()}
-      {this.renderChatComponent()}
-      {this.renderMapComponent()}
+        <TopNav />
+        {this.renderDefaultComponent()}
+        {this.renderChatComponent()}
+        {this.renderMapComponent()}
+      {/* <BottomNav /> */}
     </React.Fragment>
     );
   }

@@ -1,39 +1,24 @@
-import React, { Component } from 'react';
-import { View } from 'react-native';
+import React, {Component} from 'react';
+import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav'
 
-import { Container, Navbar } from 'navbar-native';
-
-class ReactNativeEmpty extends Component {
+export default class TopNav extends Component {
     render() {
         return (
-            <Container type="list" data={["first", "second", "third"]}>
-                <Navbar
-                    user={true}
-                    image={{
-                        source:'https://facebook.github.io/react/img/logo_og.png',
-                        type: 'remote',
-                        resizeMode: 'cover',
-                        style: {width: 50, height: 44}
-                    }}
-                    statusBar={{
-                        style: "default",
-                        hideAnimation: Navbar.FADE,
-                        showAnimation: Navbar.SLIDE,
-                    }}
-                    left={{
-                        icon: "ios-arrow-back",
-                        label: "Back",
-                        onPress: () => {alert('Go back!')}
-                    }}
-                    right={[{
-                        icon: "ios-search",
-                        onPress: () => {alert('Search!')}
-                    },{
-                        icon: "ios-menu",
-                        onPress: () => {alert('Toggle menu!')}
-                    }]}
-                />
-            </Container>
-        );
-    }
+          <NavBar>
+            <NavButton onPress={() => alert('sup')}>
+              <NavButtonText>
+                {"Button"}
+              </NavButtonText>
+            </NavButton>
+            <NavTitle>
+              {"App"}
+            </NavTitle>
+            <NavButton onPress={() => alert('not much')}>
+              <NavButtonText>
+                {"Button"}
+              </NavButtonText>
+            </NavButton>
+          </NavBar>
+        )
+      }
 }
