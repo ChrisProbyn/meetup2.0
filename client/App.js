@@ -12,6 +12,8 @@ export default class App extends React.Component {
       viewSection :false,
       backgroundImage: require("./assets/background.png"),
       currentUserID: null,
+      DefaultComponent: true,
+      GroupComponent: false,
       users: [
         {
           id: 1,
@@ -79,30 +81,31 @@ buttonPress=()=>{
 
 changeUser = incomingUser =>{
   this.setState({
-    currentUserID: incomingUser
+    currentUserID: incomingUser,
+    DefaultComponent: false,
+    GroupComponent: true,
   })
 }
 addUser =incomingUser =>{
   const oldUsers = this.state.users;
   const newUsers = [...oldUsers, incomingUser];
   this.setState({ users: newUsers});
-  //then
+  //.then() => 
   // this.setState({
   //   currentUserID: incomingUserID
   // })
 
  }
+ renderDefaultComponent = () => {
+  if(this.state.DefaultComponent)
+  return <Landing background={this.state.backgroundImage} users={this.state.users} changeUser={this.changeUser} addUser={this.addUser}/>
+ }
   render() {
     return (
-      <React.Fragment>
-        {/* <View style={styles.container}>
-      <TouchableOpacity onPress={this.buttonPress}>
-          <Text> Click Me!</Text>
-      </TouchableOpacity>
-      </View> */}
-
-      <Landing background={this.state.backgroundImage} users={this.state.users} changeUser={this.changeUser} addUser={this.addUser}/>
-      {/* <View><Text>${this.state.currentUserID}</Text></View> */}
+      <React.Fragment>  
+      
+      {this.renderDefaultComponent()}
+      {/* {this.renderGroupComponent()} */}
     </React.Fragment>
     );
   }
