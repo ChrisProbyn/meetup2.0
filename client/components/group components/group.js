@@ -36,7 +36,7 @@ export default class Group extends React.Component {
   renderDefaultComponent() {
     if(this.state.defaultSection) {
       return (
-     <GroupList groups={this.props.groups}/>
+     <GroupList groups={this.props.groups} userList={this.props.userList}/>
       )
     }
   }
@@ -61,11 +61,11 @@ export default class Group extends React.Component {
     );
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+// });

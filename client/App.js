@@ -19,18 +19,21 @@ export default class App extends React.Component {
           id: 1,
           email: "Example1@gmail.com",
           password: "123",
+          username: "bob",
           image: "",
         },
         {
           id: 2,
           email: "example2@gmail.com",
           password: "456",
+          username: "John",
           image: "",
         },
         {
           id: 3,
           email: "example3@gmail.com",
           password: "456",
+          username: "Alice",
           image: "",
         },
       ],
@@ -94,7 +97,7 @@ addUser =incomingUser =>{
  }
  renderGroupComponent = () => {
   if(this.state.GroupComponent){
-  return <Group groups={this.state.groups}/>
+  return <Group groups={this.state.groups} userList={this.state.users}/>
   }
  }
 
