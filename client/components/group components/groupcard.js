@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, Alert} from 'react-native';
 export default class GroupCard extends React.Component {
     
     render() {
+
         const allUserNames = this.props.users.map((user) => {
             let keyGen = Math.floor(Math.random()*100);
             let userEmail ="";
@@ -13,22 +14,29 @@ export default class GroupCard extends React.Component {
                     userEmail = userInList.username
                 }
             }
-            
-            return <Text key={keyGen} style={{flexDirection: 'row'}} >{userEmail}</Text>
+            return <View key={keyGen}><Text >{userEmail}   </Text></View>
         })
+        console.log(styleCard.card)
         return (
-            <View sytle={styles.container}>
+            <View style={styleCard.card}>
                 <Text>{this.props.name}</Text>
-                {allUserNames}
+                <View style={styleCard.text}>{allUserNames}</View>
+                {/* {allUserNames} */}
             </View>
         );
     }
 }
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: 'red',
+const styleCard = StyleSheet.create({
+    card: {
+      borderWidth: 1,
       alignItems: 'center',
-      marginBottom: 5,
+      marginBottom: 10,
+      alignItems: 'flex-start',
+      width: '100%'
     },
+    text: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: "flex-start"
+    }
   });
