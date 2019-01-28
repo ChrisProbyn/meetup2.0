@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
-import { StyleSheet} from 'react-native';
+import { StyleSheet, Image} from 'react-native';
 
 export default class TopNav extends Component {
     render() {
@@ -9,18 +9,18 @@ export default class TopNav extends Component {
               statusBar={{ barStyle: 'light-content' }}
             >
               <NavButton>
-                <NavButtonText style={styles.buttonText}>
-                  {"Button"}
-                </NavButtonText>
+              <Image style={styles.image}
+                resizeMode={"contain"}
+                source={require("../../assets/back-icon.png")}
+              />
               </NavButton>
               <NavTitle style={styles.title}>
                 {"App"}
               </NavTitle>
-              <NavButton>
-                <NavButtonText style={styles.buttonText}>
-                  {"Button"}
-                </NavButtonText>
-              </NavButton>
+              <Image style={styles.image}
+                resizeMode={"contain"}
+                source={require("../../assets/add-icon.png")}
+              />
             </NavBar>
           )
     }
@@ -39,5 +39,8 @@ const styles = StyleSheet.create({
     },
     buttonText: {
       color: '#b5b5b5',
+    },
+    image: {
+      width: 30,
     },
   })
