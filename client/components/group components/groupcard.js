@@ -9,15 +9,10 @@ export default class GroupCard extends React.Component {
         })
         console.log("here")
         return (
-            Alert.alert(
-                'Email does not exist',
-                'there is no registered user with that email',
-                [
-                  
-                  {text: 'OK', onPress: () => console.log('OK Pressed')},
-                ],
-                {cancelable: false},
-              )
+            <View>
+                <Text>{this.props.name}</Text>
+                {allUserNames}
+            </View>
         );
     }
 }
