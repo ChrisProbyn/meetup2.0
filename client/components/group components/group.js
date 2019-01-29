@@ -52,11 +52,11 @@ export default class Group extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <TopNav />
+        {/* <TopNav /> */}
         {this.renderDefaultComponent()}
         {this.renderChatComponent()}
         {this.renderMapComponent()}
-      {/* <BottomNav /> */}
+      <BottomNav />
     </React.Fragment>
     );
   }

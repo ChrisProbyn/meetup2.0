@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
+import NavBar, { NavButton, NavTitle } from 'react-native-nav';
 import { StyleSheet, Image} from 'react-native';
 
 export default class TopNav extends Component {
@@ -17,10 +17,12 @@ export default class TopNav extends Component {
               <NavTitle style={styles.title}>
                 {"App"}
               </NavTitle>
+              <NavButton>
               <Image style={styles.image}
                 resizeMode={"contain"}
                 source={require("../../assets/add-icon.png")}
               />
+              </NavButton>
             </NavBar>
           )
     }
