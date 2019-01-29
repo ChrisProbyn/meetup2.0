@@ -11,9 +11,10 @@ export default class Group extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      mapSection :false,
-      chatSection :false,
-      defaultSection :true,
+      mapSection: true,
+      chatSection: false,
+      defaultSection: false,
+      createGroupSection: false
     }
   }
 
@@ -36,7 +37,7 @@ export default class Group extends React.Component {
   renderDefaultComponent() {
     if(this.state.defaultSection) {
       return (
-     <GroupList groups={this.props.groups} userList={this.props.userList}/>
+     <GroupList groups={this.props.groups} userList={this.props.userList} addGroupState={this.state.createGroupSection}/>
       )
     }
   }
@@ -48,11 +49,32 @@ export default class Group extends React.Component {
   buttonChatPress=()=>{
     this.setState({chatSection:true, defaultSection: false})
   }
+  buttonCreateGroupPress=(state)=>{
+    this.setState({
+      createGroupSection: state
+    })
+  }
+  buttonBackPress=(state)=>{
+    let currentPage;
+    for (let a in this.state) {
+      if(this.state[a]) {
+        this.setState({
+          defaultSection: state,
+          [a]: false
+        })
+      }
+    }
+    // console.log(currentPage)
+    // this.setState({
+    //   defaultSection: state,
+    //   currentPage: false
+    // })
+  }
 
   render() {
     return (
       <React.Fragment>
-        <TopNav />
+        <TopNav add={this.buttonCreateGroupPress} back={this.buttonBackPress}/>
         {this.renderDefaultComponent()}
         {this.renderChatComponent()}
         {this.renderMapComponent()}

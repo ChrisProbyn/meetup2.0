@@ -3,12 +3,18 @@ import NavBar, { NavButton, NavButtonText, NavTitle } from 'react-native-nav';
 import { StyleSheet, Image} from 'react-native';
 
 export default class TopNav extends Component {
+  constructor(props) {
+    super(props)
+  }
+
     render() {
+
+     
         return (
             <NavBar style={styles}
               statusBar={{ barStyle: 'light-content' }}
             >
-              <NavButton>
+              <NavButton onPress={()=> {this.props.back(true)}}>
               <Image style={styles.image}
                 resizeMode={"contain"}
                 source={require("../../assets/back-icon.png")}
@@ -17,10 +23,12 @@ export default class TopNav extends Component {
               <NavTitle style={styles.title}>
                 {"App"}
               </NavTitle>
+              <NavButton onPress={()=> {this.props.add(true)}} >
               <Image style={styles.image}
                 resizeMode={"contain"}
                 source={require("../../assets/add-icon.png")}
               />
+              </NavButton>
             </NavBar>
           )
     }

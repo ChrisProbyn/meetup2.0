@@ -16,7 +16,6 @@ export default class GroupCard extends React.Component {
             }
             return <View key={keyGen}><Text >{userEmail}   </Text></View>
         })
-        console.log(styleCard.card)
         return (
             <View style={styleCard.card}>
                 <Text>{this.props.name}</Text>
@@ -35,6 +34,7 @@ const styleCard = StyleSheet.create({
       width: '100%'
     },
     text: {
+        borderWidth: 1,
         flexDirection: 'row',
         width: '100%',
         justifyContent: "flex-start"

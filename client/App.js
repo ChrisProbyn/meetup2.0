@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Group from './components/group components/group.js';
 import Landing from './components/landing components/Landing.js';
 
+var exampleSocket = new WebSocket("ws:localhost:3001");
 
 export default class App extends React.Component {
   constructor() {
