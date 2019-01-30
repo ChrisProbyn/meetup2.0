@@ -126,6 +126,9 @@ export default class Login extends Component {
        
         }
       }
+      onPress = () => {
+        this.props.navigation.navigate('Group');
+    }
       
     render() {
       return (
@@ -138,7 +141,7 @@ export default class Login extends Component {
         />
         <Button
           title="Login!"
-          onPress={this.handleSubmitLogin}
+          onPress={this.onPress}
           color="white"
           
         />

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text,  TouchableOpacity, ImageBackground} from 'react-native';
+import {StyleSheet, Text,  TouchableOpacity, ImageBackground} from 'react-native';
 import Login from "./Login.js";
 
 
