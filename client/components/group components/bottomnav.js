@@ -1,59 +1,12 @@
-// import React from 'react';
-// import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-// import TabBar from 'react-native-xtabbar';
+// import Map from '../map components/Map.js';
+// import Chat from '../chat components/chat.js';
+// import { createStackNavigator } from 'react-navigation'
 
-// export default class BottomNav extends React.Component {
-//     render() {
-//         return (
-//             <View ><Text>bottom nav</Text></View>
-//         );
-//     }
+// // Create the navigator
+// const BottomNav = createStackNavigator({
+//   Map: { screen: Map },
+//   Chat: { screen: Chat },
+// });
 
-// }
-
-
-
-// <TabBar
-//     style={styles.content}
-//     onItemSelected={(index) => {console.log(`current item's index is ${index}`);}}
-// >
-//     <TabBar.Item
-//         icon={require('./image/start_normal.png')}
-//         selectedIcon={require('./image/start_hightlight.png')}
-//         onPress={() => {
-//             // do sth
-//         }}
-//         badge={7}
-//         title='首页'>
-//         <View style={styles.text}>
-//             <Text style={{fontSize: 18}}>Home</Text>
-//         </View>
-//     </TabBar.Item>
-
-//     <TabBar.Item
-//         icon={require('./image/start_normal.png')}
-//         selectedIcon={require('./image/start_hightlight.png')}
-//         title='定位'>
-//         <View style={styles.text}>
-//             <Text style={{fontSize: 18}}>Location</Text>
-//         </View>
-//     </TabBar.Item>
-
-//     <TabBar.Item
-//         icon={require('./image/start_normal.png')}
-//         selectedIcon={require('./image/start_hightlight.png')}
-//         title='发现'>
-//         <View style={styles.text}>
-//             <Text style={{fontSize: 18}}>Find</Text>
-//         </View>
-//     </TabBar.Item>
-
-//     <TabBar.Item
-//         icon={require('./image/start_normal.png')}
-//         selectedIcon={require('./image/start_hightlight.png')}
-//         title='我'>
-//         <View style={styles.text}>
-//             <Text style={{fontSize: 18}}>Me</Text>
-//         </View>
-//     </TabBar.Item>
-// </TabBar>
+// // Export it as the root component
+// export default BottomNav

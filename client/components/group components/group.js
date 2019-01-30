@@ -1,93 +1,111 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import {TabBarIOS} from 'react-native';
 import Map from '../map components/Map.js';
-import Chat from '../chat components/chat.js';
 import TopNav from './topnav.js';
-import BottomNav from './bottomnav.js';
 import GroupList from './grouplist.js';
-
+import Chat from '../chat components/chat.js';
 
 export default class Group extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      mapSection: true,
-      chatSection: false,
-      defaultSection: false,
-      createGroupSection: false
+      defaultSection: true,
+      createGroupSection: false,
+      navSection: true,
+      selectedTab: 'chats'
     }
+    this.changeNavState = this.changeNavState.bind(this);
   }
 
-  renderMapComponent() {
-    if(this.state.mapSection) {
+  changeNavState = (event) =>{
+    this.setState({
+      navSection: event
+    })
+  }
+
+  renderNavComponent() {
+    if(this.state.navSection){
       return (
-      <Map />
+        <TabBarIOS selectedTab={this.state.selectedTab}>
+        <TabBarIOS.Item
+          title="Chats"
+          selected={this.state.selectedTab === 'chats'}
+          icon={require('../../assets/chat-icon.png')}
+          renderAsOriginal={true}
+          onPress={() => {
+              this.setState({
+                  selectedTab: 'chats',
+              });
+          }}>
+            <GroupList groups={this.props.groups} userList={this.props.userList} navState={this.changeNavState} addGroupState={this.state.createGroupSection}/>
+        </TabBarIOS.Item>
+        <TabBarIOS.Item
+          title="Map"
+          selected={this.state.selectedTab === 'map'}
+          icon={require('../../assets/map-icon.png')}
+          renderAsOriginal={true}
+          onPress={() => {
+                this.setState({
+                    selectedTab: 'map',
+                });
+          }}>
+          <Map/>
+        </TabBarIOS.Item>
+
+        {/* <TabBarIOS.Item
+          title="Setting"
+          selected={this.state.selectedTab === 'setting'}
+          icon={require('../../assets/setting-icon.png')}
+          renderAsOriginal={true}
+          onPress={() => {
+                this.setState({
+                    selectedTab: 'setting',
+                });
+          }}>
+          <Setting/>
+        </TabBarIOS.Item> */}
+      </TabBarIOS>
+      )
+    }else {
+      return(
+        <Chat />
       )
     }
   }
 
-  renderChatComponent() {
-    if(this.state.chatSection) {
-      return (
-      <Chat messages={this.state.messages} />
-      )
-    }
-  }
-
-  renderDefaultComponent() {
-    if(this.state.defaultSection) {
-      return (
-     <GroupList groups={this.props.groups} userList={this.props.userList} addGroupState={this.state.createGroupSection}/>
-      )
-    }
-  }
-
-  buttonMapPress=()=>{
-      this.setState({mapSection:true, defaultSection: false})
-  }
-
-  buttonChatPress=()=>{
-    this.setState({chatSection:true, defaultSection: false})
+  buttonNavPress=()=>{
+      this.setState({
+        defaultSection: false,
+        chatSection: true,
+        createGroupSection: false
+      })
   }
   buttonCreateGroupPress=(state)=>{
     this.setState({
+      defaultSection: false,
+      chatSection: false,
       createGroupSection: state
     })
   }
+
   buttonBackPress=(state)=>{
-    let currentPage;
-    for (let a in this.state) {
-      if(this.state[a]) {
+    for (let currentState in this.state) {
+      if(this.state[currentState]) {
         this.setState({
-          defaultSection: state,
-          [a]: false
+          defaultSection: true,
+          [currentState]: state
         })
       }
     }
-    // console.log(currentPage)
-    // this.setState({
-    //   defaultSection: state,
-    //   currentPage: false
-    // })
   }
 
   render() {
     return (
-      <React.Fragment>
-        <TopNav add={this.buttonCreateGroupPress} back={this.buttonBackPress}/>
-        {this.renderDefaultComponent()}
-        {this.renderChatComponent()}
-        {this.renderMapComponent()}
-      {/* <BottomNav /> */}
+    <React.Fragment>
+      <TopNav add={this.buttonCreateGroupPress} back={this.buttonBackPress}/>
+      {this.renderNavComponent()}
+
     </React.Fragment>
     );
   }
 }
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });

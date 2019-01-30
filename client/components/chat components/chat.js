@@ -31,7 +31,7 @@ export default class Chat extends Component {
 
   render() {
     return (
-      <GiftedChat
+      <GiftedChat 
         messages={this.state.messages}
         onSend={messages => this.onSend(messages)}
         user={{
