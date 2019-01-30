@@ -3,13 +3,12 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Group from './components/group components/group.js';
 import Landing from './components/landing components/Landing.js';
 
+var exampleSocket = new WebSocket("ws:localhost:3001");
 
 export default class App extends React.Component {
   constructor() {
     super()
-    
     this.state = {
-      viewSection :false,
       backgroundImage: require("./assets/background.png"),
       currentUserID: null,
       DefaultComponent: false,
@@ -70,52 +69,40 @@ export default class App extends React.Component {
     this.addUser = this.addUser.bind(this);
   }
 
-
-
-
-
-changeUser = incomingUser =>{
-  this.setState({
-    currentUserID: incomingUser,
-    DefaultComponent: false,
-    GroupComponent: true,
-  })
-}
-addUser =incomingUser =>{
-  const oldUsers = this.state.users;
-  const newUsers = [...oldUsers, incomingUser];
-  this.setState({ users: newUsers});
-  //.then() => 
-  // this.setState({
-  //   currentUserID: incomingUserID
-  // })
-
- }
- renderDefaultComponent = () => {
-  if(this.state.DefaultComponent)
-  return <Landing background={this.state.backgroundImage} users={this.state.users} changeUser={this.changeUser} addUser={this.addUser}/>
- }
- renderGroupComponent = () => {
-  if(this.state.GroupComponent){
-  return <Group groups={this.state.groups} userList={this.state.users}/>
+  changeUser = incomingUser =>{
+    this.setState({
+      currentUserID: incomingUser,
+      DefaultComponent: false,
+      GroupComponent: true,
+    })
   }
- }
+  addUser =incomingUser =>{
+    const oldUsers = this.state.users;
+    const newUsers = [...oldUsers, incomingUser];
+    this.setState({ users: newUsers});
+    //.then() => 
+    // this.setState({
+    //   currentUserID: incomingUserID
+    // })
+  }
+
+  renderDefaultComponent = () => {
+    if(this.state.DefaultComponent)
+    return <Landing background={this.state.backgroundImage} users={this.state.users} changeUser={this.changeUser} addUser={this.addUser}/>
+  }
+
+  renderGroupComponent = () => {
+    if(this.state.GroupComponent){
+    return <Group groups={this.state.groups} userList={this.state.users}/>
+    }
+  }
 
   render() {
     return (
-      <React.Fragment>  
-      
-      {this.renderDefaultComponent()}
-      {this.renderGroupComponent()}
-    </React.Fragment>
+      <React.Fragment>
+        {this.renderDefaultComponent()}
+        {this.renderGroupComponent()}
+      </React.Fragment>
     );
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

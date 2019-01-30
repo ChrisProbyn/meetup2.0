@@ -7,15 +7,16 @@ export default class BottomNav extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          selectedTab: 'chat'
+          selectedTab: ''
         };
       }
     render() {
       return (
         <TabBarIOS selectedTab={this.state.selectedTab}>
         <TabBarIOS.Item
+          title="Chat"
           selected={this.state.selectedTab === 'chat'}
-          icon={'../../assets/back-icon.png'}
+          icon={require('../../assets/chat-icon.png')}
           onPress={() => {
               this.setState({
                   selectedTab: 'chat',
@@ -25,7 +26,7 @@ export default class BottomNav extends Component {
         </TabBarIOS.Item>
         <TabBarIOS.Item
           selected={this.state.selectedTab === 'map'}
-          icon={'../../assets/back-icon.png'}
+          icon={require('../../assets/map-icon.png')}
           onPress={() => {
                 this.setState({
                     selectedTab: 'map',

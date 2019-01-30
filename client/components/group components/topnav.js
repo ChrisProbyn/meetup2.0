@@ -3,29 +3,30 @@ import NavBar, { NavButton, NavTitle } from 'react-native-nav';
 import { StyleSheet, Image} from 'react-native';
 
 export default class TopNav extends Component {
-    render() {
-        return (
-            <NavBar style={styles}
-              statusBar={{ barStyle: 'light-content' }}
-            >
-              <NavButton>
-              <Image style={styles.image}
-                resizeMode={"contain"}
-                source={require("../../assets/back-icon.png")}
-              />
-              </NavButton>
-              <NavTitle style={styles.title}>
-                {"App"}
-              </NavTitle>
-              <NavButton>
-              <Image style={styles.image}
-                resizeMode={"contain"}
-                source={require("../../assets/add-icon.png")}
-              />
-              </NavButton>
-            </NavBar>
-          )
-    }
+  constructor(props) {
+    super(props)
+  }
+  render() {   
+    return (
+      <NavBar style={styles} statusBar={{ barStyle: 'light-content' }}>
+        <NavButton onPress={()=> {this.props.back(true)}}>
+        <Image style={styles.image}
+          resizeMode={"contain"}
+          source={require("../../assets/back-icon.png")}
+        />
+        </NavButton>
+        <NavTitle style={styles.title}>
+          {"Groups"}
+        </NavTitle>
+        <NavButton onPress={()=> {this.props.add(true)}} >
+        <Image style={styles.image}
+          resizeMode={"contain"}
+          source={require("../../assets/add-icon.png")}
+        />
+        </NavButton>
+      </NavBar>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -34,7 +35,8 @@ const styles = StyleSheet.create({
       paddingTop: 50,
     },
     navBar: {
-      backgroundColor: '#212121',
+      height: 50,
+      backgroundColor: 'darkgrey',
     },
     title: {
       color: '#fff',
