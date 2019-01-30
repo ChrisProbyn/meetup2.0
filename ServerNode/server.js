@@ -11,7 +11,6 @@ const knexConfig = require('./knexfile');
 
 const knex = require('knex')(knexConfig[ENV]);
 
-console.log(knexConfig[ENV])
 const typeDefs = gql`
   # Comments in GraphQL are defined with the hash (#) symbol.
   type Location {
@@ -29,13 +28,13 @@ const typeDefs = gql`
 
   type Food_preferences {
     id: ID
-    asian: Int
-    bar: Int
-    steak: Int
-    pizza: Int
-    bbq: Int
-    mexican: Int
-    italian: Int
+    Asian: Int
+    Bar_food: Int
+    Steak: Int
+    Pizza: Int
+    BBQ: Int
+    Mexican: Int
+    Italian: Int
   }
 
   type Nightlife_preferences {
@@ -84,7 +83,7 @@ const typeDefs = gql`
     nightlife_preferences: Nightlife_preferences
   }
 
-  type Mutations {
+  type Mutation {
     createMessage(username: String, Group_name: String, text: String): Message
     #changeUserLocation(username: String, lat: Float, long: Float): User
     #createGroup(GroupName: String): Group
@@ -129,7 +128,7 @@ const resolvers = {
       return knex('nightlife_preferences');
     },
     user: (root, args, context, info) => {
-      return knex('users').where('id', args.id).then(player => player[0]);
+      return knex('users').where('id', args.id).then(user => user[0]);
     },
     messages: () => {
       return knex('messages');
@@ -143,13 +142,19 @@ const resolvers = {
     nightlife_preferences(user) {
       return knex.table('users').leftJoin('nightlife_preferences', 'users.nightlife_preferences_id', 'nightlife_preferences.id').where('username', `${user.username}`).first('Nightclub',"Bar","Pub");
     },
+    food_preferences(user){
+      return knex.table('users').leftJoin('food_preferences', 'users.food_preferences_id', 'food_preferences.id').where('username', `${user.username}`).first('Asian',"Bar_food","Steak","Pizza", "BBQ", "Mexican","Italian");
+    },
     groups(user) {
-      return knex('users').leftJoin('groups', 'users.group_id', 'groups.id').where('username', `${user.username}`);
+      return knex('users').leftJoin('members', 'users.id', 'members.user_id').leftJoin('groups', "members.group_id", "groups.id").where('username', `${user.username}`);
+    },
+    messages(user) {
+      return knex.table('users').leftJoin('messages', 'users.id', 'messages.user_id').where('username', `${user.username}`);
     }
   },
   Group:{
     users(group) {
-      return knex('users').leftJoin('groups', 'users.group_id', 'groups.id').where('Group_name', `${group.Group_name}`);
+      return knex('users').leftJoin('members', 'users.id', 'members.user_id').leftJoin('groups', "members.group_id", "groups.id").where('Group_name', `${group.Group_name}`);
     },
     // users: {
     //   messages(group,user) {
@@ -164,7 +169,7 @@ const resolvers = {
   // }
 
 
-  Mutations: {
+  Mutation: {
     createMessage: (root, {username, Group_name, text}, context, info) => {
       let userID = knex('users').where('username', {username}).then((resultUserID) => resultUserID)
       let groupID = knex("groups").where("Group_name", {Group_name}).then((resultGroupID) => resultGroupID)

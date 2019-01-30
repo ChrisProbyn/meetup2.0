@@ -11,6 +11,7 @@ exports.seed = function(knex, Promise) {
         {id: 7003, text: 'kenobi', group_id: 3000, user_id:6001},
         {id: 7004, text: 'hello', group_id: 3001, user_id:6002},
         {id: 7005, text: 'is there anybody in there', group_id: 3001, user_id:6002},
+        {id: 7006, text: 'test', group_id: 3001, user_id:6000},
       ]);
     });
 };
