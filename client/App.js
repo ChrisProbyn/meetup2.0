@@ -4,6 +4,18 @@ import Chat from './components/chat.js';
 import Landing from './components/landing.js';
 import Group from './components/group.js';
 
+//Import Apollo
+import ApolloClient from "apollo-boost";
+import {
+  gql,
+  graphql,
+  ApolloProvider,
+ } from 'react-apollo';
+
+ const client = new ApolloClient({
+  uri: "http://192.168.88.70:4000/graphql"
+ });
+
 //Import React
 import React from 'react';
 
@@ -11,11 +23,30 @@ import React from 'react';
 import {
   createStackNavigator,
   createAppContainer,
-  createBottomTabNavigator
+  createSwitchNavigator
 } from 'react-navigation';
 
+const typeDefs =
+`type Channel {
+  id: ID!                # "!" denotes a required field
+  name: String
+}`
+
+
+
+export default class App extends React.Component {
+  render() {
+    /* In the root component we are rendering the app navigator */
+    return (
+      <ApolloProvider client={client}>
+        <AppContainer />
+      </ApolloProvider>
+    )
+  }
+}
+
 // Create the navigator
-const RootStack = createStackNavigator({
+const AppNavigator = createStackNavigator({
   Home: {
     screen: Main
   },
@@ -30,7 +61,8 @@ const RootStack = createStackNavigator({
   }
 });
 
-const App = createAppContainer(RootStack);
+const RootNavigator = createSwitchNavigator({
+  Nav: AppNavigator,
+})
 
-// Export it as the root component
-export default App
+const AppContainer = createAppContainer(RootNavigator);

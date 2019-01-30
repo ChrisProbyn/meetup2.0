@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { ImageBackground, Text, StyleSheet, TouchableOpacity, } from 'react-native';
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
 
 class Main extends Component {
     state = {
@@ -11,12 +13,32 @@ class Main extends Component {
   }
 
   render() {
+    const query = gql
+    `{
+      user(id:6000){
+        username
+      }
+     }`
     return (
-      <ImageBackground source={this.state.backgroundImage} style={styles.container}>
-        <TouchableOpacity onPress={this.onPress}>
-          <Text style={styles.text}>MeetUp</Text>
-        </TouchableOpacity>
-      </ImageBackground>
+      <Query query={query}>
+       {({loading, error, data}) => {
+         if(loading) return <Text>Loading Textlayers...</Text>;
+         if(error) return <Text>PLAYER ERROR! {error}</Text>;
+
+         return (
+           <React.Fragment>
+             <Text>
+              {data.user.username}
+             </Text>
+           </React.Fragment>
+         );
+       }}
+     </Query>
+      // <ImageBackground source={this.state.backgroundImage} style={styles.container}>
+      //   <TouchableOpacity onPress={this.onPress}>
+      //     <Text style={styles.text}>MeetUp</Text>
+      //   </TouchableOpacity>
+      // </ImageBackground>
     );
   }
 }
