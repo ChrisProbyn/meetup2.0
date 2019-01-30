@@ -10,7 +10,7 @@ exports.seed = function(knex, Promise) {
         {id: 7002, text: 'general', group_id: 3000, user_id:6001},
         {id: 7003, text: 'kenobi', group_id: 3000, user_id:6001},
         {id: 7004, text: 'hello', group_id: 3001, user_id:6002},
-        {id: 705, text: 'is there anybody in there', group_id: 3001, user_id:6002},
+        {id: 7005, text: 'is there anybody in there', group_id: 3001, user_id:6002},
       ]);
     });
 };
