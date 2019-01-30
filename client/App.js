@@ -1,9 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Group from './components/group components/group.js';
 import Landing from './components/landing components/Landing.js';
-
-var exampleSocket = new WebSocket("ws:localhost:3001");
 
 export default class App extends React.Component {
   constructor() {
@@ -80,10 +77,6 @@ export default class App extends React.Component {
     const oldUsers = this.state.users;
     const newUsers = [...oldUsers, incomingUser];
     this.setState({ users: newUsers});
-    //.then() => 
-    // this.setState({
-    //   currentUserID: incomingUserID
-    // })
   }
 
   renderDefaultComponent = () => {
@@ -96,6 +89,9 @@ export default class App extends React.Component {
     return <Group groups={this.state.groups} userList={this.state.users}/>
     }
   }
+  static navigationOptions = {
+    title: 'Welcome',
+  };
 
   render() {
     return (

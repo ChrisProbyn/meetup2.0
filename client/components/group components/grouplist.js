@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { List, ListItem, SearchBar } from 'react-native-elements';
+import Chat from '../chat components/chat.js';
 
 class GroupList extends Component {
   constructor(props) {
@@ -10,6 +11,8 @@ class GroupList extends Component {
       loading: false,
       data: [],
       error: null,
+      defaultSection: true,
+      chatSection: false,
     };
 
     this.arrayholder = [];
@@ -37,6 +40,47 @@ class GroupList extends Component {
         this.setState({ error, loading: false });
       });
   };
+
+  renderDefaultComponent() {
+    if(this.state.defaultSection) {
+      return (
+        <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+        <FlatList
+          data={this.state.data}
+          renderItem={({ item }) => (
+            <ListItem onPress={this.buttonChatPress}
+              roundAvatar
+              title={`${item.name.first} ${item.name.last}`}
+              subtitle={item.email}
+              avatar={{ uri: item.picture.thumbnail }}
+              containerStyle={{ borderBottomWidth: 0 }}
+              badge={{ value: 3, textStyle: { color: 'orange' }}}
+            />
+          )}
+          keyExtractor={item => item.email}
+          ItemSeparatorComponent={this.renderSeparator}
+          ListHeaderComponent={this.renderHeader}
+        />
+      </List>
+      )
+    }
+  }
+
+  renderChatComponent() {
+    if(this.state.chatSection){
+      return (
+        <Chat/>
+      )
+    }
+  }
+
+  buttonChatPress=()=>{
+    this.setState({
+      defaultSection:false,
+      chatSection: true,
+    })
+    this.props.navState(false);
+  }
 
   renderSeparator = () => {
     return (
@@ -84,23 +128,10 @@ class GroupList extends Component {
       );
     }
     return (
-      <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
-        <FlatList
-          data={this.state.data}
-          renderItem={({ item }) => (
-            <ListItem
-              roundAvatar
-              title={`${item.name.first} ${item.name.last}`}
-              subtitle={item.email}
-              avatar={{ uri: item.picture.thumbnail }}
-              containerStyle={{ borderBottomWidth: 0 }}
-            />
-          )}
-          keyExtractor={item => item.email}
-          ItemSeparatorComponent={this.renderSeparator}
-          ListHeaderComponent={this.renderHeader}
-        />
-      </List>
+      <React.Fragment>
+        {this.renderDefaultComponent()}
+        {this.renderChatComponent()}
+      </React.Fragment>
     );
   }
 }
