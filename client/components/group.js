@@ -1,111 +1,152 @@
 import React, { Component } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { View, FlatList, ActivityIndicator, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { List, ListItem, SearchBar } from 'react-native-elements';
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
 
 class Group extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: false,
-      data: [],
-      error: null,
-    };
-    this.arrayholder = [];
+
+  onChatPress = (group) => {
+    this.props.navigation.navigate('Chat', {groupName: group});
   }
 
-  componentDidMount() {
-    this.makeRemoteRequest();
-  }
-
-  makeRemoteRequest = () => {
-    const url = `https://randomuser.me/api/?&results=20`;
-    this.setState({ loading: true });
-
-    fetch(url)
-      .then(res => res.json())
-      .then(res => {
-        this.setState({
-          data: res.results,
-          error: res.error || null,
-          loading: false,
-        });
-        this.arrayholder = res.results;
-      })
-      .catch(error => {
-        this.setState({ error, loading: false });
-      });
-  };
-
-  renderSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 1,
-          width: '86%',
-          backgroundColor: '#CED0CE',
-          marginLeft: '14%',
-        }}
-      />
-    );
-  };
-
-  searchFilterFunction = text => {
-    console.log(this.arrayholder);
-    const newData = this.arrayholder.filter(item => {
-      const itemData = `${item.name.title.toUpperCase()} ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
-      const textData = text.toUpperCase();
-      return itemData.indexOf(textData) > -1;
-    });
-    this.setState({
-      data: newData,
-    });
-  };
-
-  renderHeader = () => {
-    return (
-      <SearchBar
-        placeholder="Type Here..."
-        lightTheme
-        round
-        onChangeText={text => this.searchFilterFunction(text)}
-        autoCorrect={false}
-      />
-    );
-  };
-
-  onChatPress = () => {
-    this.props.navigation.navigate('Chat');
-  }
-
-  render() {
-    if (this.state.loading) {
+  renderGroupMembers = (group) => {
+    if(group.users) {
       return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <ActivityIndicator />
+        <View style={styles.groupMembersContent}>
+          {group.users.map((prop, key) => {
+            return (
+              <Text key={key} style={styles.memberImage}>
+                {prop.username}
+              </Text>
+            );
+          })}
         </View>
       );
     }
+    return null;
+  }
+
+  render() {
+    const query = gql`
+    {
+      user(id:6000){
+        email
+        groups{
+          Group_name
+          users{
+            username
+          }
+        }
+     
+      }
+     }`
+
     return (
-      <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
-        <FlatList
-          data={this.state.data}
-          renderItem={({ item }) => (
-            <ListItem onPress={this.onChatPress}
-              roundAvatar
-              title={`${item.name.first} ${item.name.last}`}
-              subtitle={item.email}
-              avatar={{ uri: item.picture.thumbnail }}
-              containerStyle={{ borderBottomWidth: 0 }}
-              badge={{ value: 3, textStyle: { color: 'orange' }}}
-            />
-          )}
-          keyExtractor={item => item.email}
-          ItemSeparatorComponent={this.renderSeparator}
-          ListHeaderComponent={this.renderHeader}
-        />
-      </List>
+      <Query query={query}>
+      {({loading, error, data}) => {
+        if(loading) return <Text>Loading Container...</Text>;
+        if(error) return <Text>Group Component ERROR! {error}</Text>;
+        return (
+          <FlatList
+          style={styles.root}
+          data={data.user.groups}
+          extraData={data}
+          ItemSeparatorComponent={() => {
+            return (
+              <View style={styles.separator}/>
+            )
+          }}
+          keyExtractor={(item)=>{
+            return item.Group_name;
+          }}
+          renderItem={(item) => {
+            const Group = item.item;
+            let mainContentStyle;
+            if(Group.attachment) {
+              mainContentStyle = styles.mainContent;
+            }
+            return(
+              <TouchableOpacity onPress={() => {this.onChatPress(item.Group_name)}}>
+              <View style={styles.container} >
+                <View style={styles.content}>
+                  <View style={mainContentStyle}>
+                    <View style={styles.text}>
+                      <Text style={styles.groupName} >{Group.Group_name}</Text>
+                    </View>
+                    <Text style={styles.countMembers}>
+                      {Group.countMembers} members
+                    </Text>
+                    <Text style={styles.timeAgo}>
+                      Updated a few seconds ago
+                    </Text>
+                    {this.renderGroupMembers(Group)}
+                  </View>
+                </View>
+              </View>
+              </TouchableOpacity>
+            );
+          }}/>
+        );
+      }}
+    </Query>
     );
   }
 }
+const styles = StyleSheet.create({
+  root: {
+    backgroundColor: "#FFFFFF"
+  },
+  container: {
+    padding: 16,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: "#FFFFFF",
+    alignItems: 'flex-start'
+  },
+  avatar: {
+    width:55,
+    height:55,
+    borderRadius:25,
+  },
+  text: {
+    marginBottom: 5,
+    flexDirection: 'row',
+    flexWrap:'wrap'
+  },
+  content: {
+    flex: 1,
+    marginLeft: 16,
+    marginRight: 0
+  },
+  mainContent: {
+    marginRight: 60
+  },
+  memberImage: {
+    height: 30,
+    width: 30,
+    marginRight:4,
+    borderRadius:10,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#CCCCCC"
+  },
+  countMembers:{
+    color:"#20B2AA"
+  },
+  timeAgo:{
+    fontSize:12,
+    color:"#696969"
+  },
+  groupName:{
+    fontSize:23,
+    color:"#1E90FF"
+  },
+  groupMembersContent:{
+    flexDirection:'row',
+    marginTop:10
+  }
+}); 
 
 export default Group;

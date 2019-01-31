@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {View, Button, Alert} from 'react-native';
-
+import {View, Button, Alert, Text} from 'react-native';
 import t from 'tcomb-form-native';
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
 
 const Form = t.form.Form;
 const User = t.struct({
@@ -65,8 +66,8 @@ const User = t.struct({
   };
 
 export default class Login extends Component {
-    handleSubmitLogin = () => {
-        const users = this.props.users;
+    handleSubmitLogin = (data) => {
+        const users = data.users;
         const value = this._form.getValue();
         let userPassword = "";
         let userID;
@@ -90,7 +91,7 @@ export default class Login extends Component {
           );
         } else {
         if(value.password === userPassword) {
-          this.props.changeUser(userID)
+          this.props.navigation.navigate('Group', userID=userID);
         } else{
           Alert.alert(
             'Wrong Password',
@@ -129,28 +130,44 @@ export default class Login extends Component {
       onPress = () => {
         this.props.navigation.navigate('Group');
     }
-      
     render() {
+      const query = gql`
+      {
+        users{
+          email
+          username
+          password
+        }
+       }`
+
       return (
+        <Query query={query}>
+        {({loading, error, data}) => {
+          if(loading) return <Text>Loading Textlayers...</Text>;
+          if(error) return <Text>PLAYER ERROR! {error}</Text>;
+ 
+          return (
           <View >
-        <Form 
-          ref={c => this._form = c}
-          type={User} 
-          options={options}
-          style={{color: 'white'}}
-        />
-        <Button
-          title="Login!"
-          onPress={this.onPress}
-          color="white"
-          
-        />
-         <Button
-          title="Sign Up!"
-          onPress={this.handleSubmitSignup}
-          color="white"
-        />
-      </View>
+          <Form 
+            ref={c => this._form = c}
+            type={User} 
+            options={options}
+            style={{color: 'white'}}
+          />
+          <Button
+            title="Login"
+            onPress={() => {this.handleSubmitLogin(data)}}
+            color="white"
+          />
+          <Button
+            title="Sign Up!"
+            onPress={this.handleSubmitSignup}
+            color="white"
+          />
+        </View>
+          );
+        }}
+      </Query>
       );
     }
   }
