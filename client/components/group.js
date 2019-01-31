@@ -1,100 +1,99 @@
 import React, { Component } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { View, FlatList, ActivityIndicator, Text } from 'react-native';
 import { List, ListItem, SearchBar } from 'react-native-elements';
+import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
 
 class Group extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: false,
-      data: [],
-      error: null,
-    };
-    this.arrayholder = [];
-  }
+ constructor(props) {
+   super(props);
+   this.state = {
+     // loading: false,
+     data: [],
+     error: null,
+   };
+   this.arrayholder = [];
+ }
 
-  componentDidMount() {
-    this.makeRemoteRequest();
-  }
+ renderSeparator = () => {
+   return (
+     <View
+       style={{
+         height: 1,
+         width: '86%',
+         backgroundColor: '#CED0CE',
+         marginLeft: '4%',
+       }}
+     />
+   );
+ };
 
-  makeRemoteRequest = () => {
-    const url = `https://randomuser.me/api/?&results=20`;
-    this.setState({ loading: true });
+ searchFilterFunction = text => {
+   const newData = this.arrayholder.filter(item => {
+     const itemData = `${item.name.title.toUpperCase()} ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
+     const textData = text.toUpperCase();
+     return itemData.indexOf(textData) > -1;
+   });
+   this.setState({
+     data: newData,
+   });
+ };
 
-    fetch(url)
-      .then(res => res.json())
-      .then(res => {
-        this.setState({
-          data: res.results,
-          error: res.error || null,
-          loading: false,
-        });
-        this.arrayholder = res.results;
-      })
-      .catch(error => {
-        this.setState({ error, loading: false });
-      });
-  };
+ renderHeader = () => {
+   return (
+     <SearchBar
+       placeholder='Type Here...'
+       lightTheme
+       round
+       onChangeText={text => this.searchFilterFunction(text)}
+       autoCorrect={false}
+     />
+   );
+ };
 
-  renderSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 1,
-          width: '86%',
-          backgroundColor: '#CED0CE',
-          marginLeft: '14%',
-        }}
-      />
-    );
-  };
+ onChatPress = () => {
+   this.props.navigation.navigate('Chat');
+ }
 
-  searchFilterFunction = text => {
-    console.log(this.arrayholder);
-    const newData = this.arrayholder.filter(item => {
-      const itemData = `${item.name.title.toUpperCase()} ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
-      const textData = text.toUpperCase();
-      return itemData.indexOf(textData) > -1;
-    });
-    this.setState({
-      data: newData,
-    });
-  };
+ render() {
+  const userId = this.props.navigation.getParam('userID', 0);
+   const query = gql`
+   {
+     user(id: ${userId}){
+       email
+       groups{
+         Group_name
+         users{
+           username
+         }
+       }
 
-  renderHeader = () => {
-    return (
-      <SearchBar
-        placeholder="Type Here..."
-        lightTheme
-        round
-        onChangeText={text => this.searchFilterFunction(text)}
-        autoCorrect={false}
-      />
-    );
-  };
+     }
+    }`
 
-  onChatPress = () => {
-    this.props.navigation.navigate('Chat');
-  }
+   // if (this.state.loading) {
+   //   return (
+   //     <View style={{ flex: 1, alignItems: ‘center’, justifyContent: ‘center’ }}>
+   //       <ActivityIndicator />
+   //     </View>
+   //   );
+   // }
 
-  render() {
-    if (this.state.loading) {
-      return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
-    return (
-      <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+   return (
+     <Query query={query}>
+     {({loading, error, data}) => {
+       if(loading) return <Text>Loading Textlayers...</Text>;
+       if(error) return <Text>PLAYER ERROR! {error}</Text>;
+
+       return (
+        <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
         <FlatList
-          data={this.state.data}
-          renderItem={({ item }) => (
+          data={data.user}
+          renderItem={({ groups }) => (
             <ListItem onPress={this.onChatPress}
               roundAvatar
-              title={`${item.name.first} ${item.name.last}`}
-              subtitle={item.email}
-              avatar={{ uri: item.picture.thumbnail }}
+              title={`${groups.Group_name}`}
+              subtitle={groups.users[0].username}
               containerStyle={{ borderBottomWidth: 0 }}
               badge={{ value: 3, textStyle: { color: 'orange' }}}
             />
@@ -104,8 +103,12 @@ class Group extends Component {
           ListHeaderComponent={this.renderHeader}
         />
       </List>
-    );
-  }
+          
+       );
+     }}
+   </Query>
+   );
+ }
 }
 
 export default Group;

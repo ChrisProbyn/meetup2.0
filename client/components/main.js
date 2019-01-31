@@ -9,7 +9,7 @@ class Main extends Component {
   }
 
   onPress = () => {
-      this.props.navigation.navigate('Landing');
+      this.props.navigation.navigate('Group', {userID:6000});
   }
 
   render() {
@@ -20,25 +20,25 @@ class Main extends Component {
       }
      }`
     return (
-      <Query query={query}>
-       {({loading, error, data}) => {
-         if(loading) return <Text>Loading Textlayers...</Text>;
-         if(error) return <Text>PLAYER ERROR! {error}</Text>;
+    //   <Query query={query}>
+    //    {({loading, error, data}) => {
+    //      if(loading) return <Text>Loading Textlayers...</Text>;
+    //      if(error) return <Text>PLAYER ERROR! {error}</Text>;
 
-         return (
-           <React.Fragment>
-             <Text>
-              {data.user.username}
-             </Text>
-           </React.Fragment>
-         );
-       }}
-     </Query>
-      // <ImageBackground source={this.state.backgroundImage} style={styles.container}>
-      //   <TouchableOpacity onPress={this.onPress}>
-      //     <Text style={styles.text}>MeetUp</Text>
-      //   </TouchableOpacity>
-      // </ImageBackground>
+    //      return (
+    //        <React.Fragment>
+    //          <Text>
+    //           {data.user.username}
+    //          </Text>
+    //        </React.Fragment>
+    //      );
+    //    }}
+    //  </Query>
+      <ImageBackground source={this.state.backgroundImage} style={styles.container}>
+        <TouchableOpacity onPress={this.onPress}>
+          <Text style={styles.text}>MeetUp</Text>
+        </TouchableOpacity>
+      </ImageBackground>
     );
   }
 }

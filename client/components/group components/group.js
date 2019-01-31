@@ -101,19 +101,12 @@ export default class Group extends React.Component {
 
   render() {
     return (
-<<<<<<< Updated upstream
-    <React.Fragment>
-      <TopNav add={this.buttonCreateGroupPress} back={this.buttonBackPress}/>
-      {this.renderNavComponent()}
-
-=======
       <React.Fragment>
        <TopNav add={this.buttonCreateGroupPress} back={this.buttonBackPress}/>
         {this.renderDefaultComponent()}
         {this.renderChatComponent()}
         
       {/* <BottomNav /> */}
->>>>>>> Stashed changes
     </React.Fragment>
     );
   }
