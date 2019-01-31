@@ -1,17 +1,8 @@
 import React, {Component} from 'react';
-import {View, Button, Alert, Text} from 'react-native';
-import { Query } from "react-apollo";
+import {View, Button, Alert} from 'react-native';
+  import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import t from 'tcomb-form-native';
-const query = gql`
-{
-  users {
-    email
-    username
-    password
-  }
-}
-`;
 
 const Form = t.form.Form;
 const User = t.struct({
@@ -141,15 +132,25 @@ export default class Login extends Component {
       
     render() {
       return (
-        <Query query={query}>
-        {({loading, error, data}) => {
-          if(loading) return <p>Loading...</p>;
-          if(error) return <p><strong>ERROR!</strong> {error}</p>;
-
-          return data.users.map(user => <View><Text>{user.email}</Text></View>);
-        }}
-      </Query>
-
+          <View >
+        <Form 
+          ref={c => this._form = c}
+          type={User} 
+          options={options}
+          style={{color: 'white'}}
+        />
+        <Button
+          title="Login!"
+          onPress={this.handleSubmitLogin}
+          color="white"
+          
+        />
+         <Button
+          title="Sign Up!"
+          onPress={this.handleSubmitSignup}
+          color="white"
+        />
+      </View>
       );
     }
   }
