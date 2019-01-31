@@ -14,20 +14,23 @@ const knex = require('knex')(knexConfig[ENV]);
 const typeDefs = gql`
   # Comments in GraphQL are defined with the hash (#) symbol.
   type Location {
-    id: ID
+    id: ID!
     lat: Float
     long: Float
   }
 
   type Place {
-    id: ID
+    id: ID!
     type: String
     place_name: String
     location: Location
   }
-
+  type Channel {
+    id: ID!               
+    name: String
+  }
   type Food_preferences {
-    id: ID
+    id: ID!
     Asian: Int
     Bar_food: Int
     Steak: Int
@@ -38,20 +41,20 @@ const typeDefs = gql`
   }
 
   type Nightlife_preferences {
-    id: ID
+    id: ID!
     Nightclub: Int
     Bar: Int
     Pub: Int
   }
   type Group {
-    id: ID
+    id: ID!
     Group_name: String
     messages: [Message]
     users: [User]
   }
 
   type User {
-    id: ID
+    id: ID!
     email: String
     password: String
     username: String
@@ -63,7 +66,7 @@ const typeDefs = gql`
   }
 
   type Message {
-    id: ID,
+    id: ID!
     group: Group
     user: User
     text: String
@@ -78,6 +81,7 @@ const typeDefs = gql`
     user(id: ID): User
     places: [Place]
     messages: [Message]
+    channels: [Channel]
     
     food_preferences: [Food_preferences]
     nightlife_preferences: Nightlife_preferences
@@ -86,7 +90,7 @@ const typeDefs = gql`
   type Mutation {
     createMessage(username: String, Group_name: String, text: String): Message
     #changeUserLocation(username: String, lat: Float, long: Float): User
-    #createGroup(GroupName: String): Group
+    createGroup(Group_name: String,): Group
     #deleteGroup(GroupName: String): Group
     #createPlace()
     #changeUserResterauntPreference():
@@ -171,17 +175,19 @@ const resolvers = {
 
   Mutation: {
     createMessage: (root, {username, Group_name, text}, context, info) => {
-      let userID = knex('users').where('username', {username}).then((resultUserID) => resultUserID)
-      let groupID = knex("groups").where("Group_name", {Group_name}).then((resultGroupID) => resultGroupID)
-      let insertMessage = Promise.all([userID,groupID]).then((result) => {
+      let userID = knex('users').where('username', username).then((resultUserID) => resultUserID)
+      let groupID = knex("groups").where("Group_name", Group_name).then((resultGroupID) => resultGroupID)
+      return Promise.all([userID,groupID]).then((result) => {
           groupID = result[1][0].id
           userID = result[0][0].id
           console.log(groupID)
           console.log(userID)
-          knex('messages').insert({text: {text}, group_id: groupID, user_id: userID })
+          knex('messages').insert({text: text, group_id: groupID, user_id: userID }).then((result) => result)
       })
-      return insertMessage;
     },
+    createGroup: (root, {Group_name}, context, info) => {
+        return knex()
+    }
   }
 };
 

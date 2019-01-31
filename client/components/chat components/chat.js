@@ -2,9 +2,41 @@ import React, {Component} from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 
 export default class Chat extends Component {
+  constructor(props){
+  super(props)
   state = {
     messages: [],
   }
+}
+  AddMessage = ({ mutate }) => {
+  const handleKeyUp = (evt) => {
+    if (evt.keyCode === 13) {
+      evt.persist();
+      mutate({ 
+        variables: { name: evt.target.value }
+      })
+      .then( res => {
+        evt.target.value = '';  
+      });
+    }
+  };
+  return (
+    <input
+      type="text"
+      placeholder="New channel"
+      onKeyUp={handleKeyUp}
+    />
+  );
+};
+
+addMessageMutation = gql`
+  mutation addChannel($name: String!) {
+    addChannel(name: $name) {
+      id
+      name
+    }
+  }
+`;
 
   componentWillMount() {
     this.setState({
@@ -30,6 +62,26 @@ export default class Chat extends Component {
   }
 
   render() {
+    const AddChannel = ({ mutate }) => {
+      const handleKeyUp = (evt) => {
+        if (evt.keyCode === 13) {
+          evt.persist();
+          mutate({ 
+            variables: { name: evt.target.value }
+          })
+          .then( res => {
+            evt.target.value = '';  
+          });
+        }
+      };
+      return (
+        <input
+          type="text"
+          placeholder="New channel"
+          onKeyUp={handleKeyUp}
+        />
+      );
+    };
     return (
       <GiftedChat 
         messages={this.state.messages}
