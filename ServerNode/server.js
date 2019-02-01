@@ -151,7 +151,11 @@ const resolvers = {
       return knex('messages');
     },
     group: (root, args, context, info) =>{
+<<<<<<< HEAD
         return knex('groups').where('id', args.id).then(group => group[0])
+=======
+      return knex('groups').where('id', args.id).then(group => group[0])
+>>>>>>> cf538ee809a4f4a087e535ae12a68a8d6ee5d5f2
     }
     
   },
@@ -235,7 +239,6 @@ const server = new ApolloServer({
 
 server.listen().then(({ url }) => {
   console.log(`🚀  Server ready at ${url} 🚀`);
-
 });
 
 
