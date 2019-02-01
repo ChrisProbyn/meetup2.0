@@ -1,15 +1,22 @@
 // server.js
 
-const express = require('express');
-const SocketServer = require('ws');
-const uuidv4 = require('uuid/v4');
-const PORT        = process.env.PORT || 8080;
-const ENV         = process.env.NODE_ENV || "development";
-const { ApolloServer, gql, PubSub } = require('apollo-server');
+// const { execute, subscribe } = require('graphql');
+// const { createServer }= require('http');
+// const { SubscriptionServer } =  require('subscriptions-transport-ws');
 
+// const express = require('express');
+// const SocketServer = require('ws');
+// const uuidv4 = require('uuid/v4');
+// const PORT        = process.env.PORT || 8080;
+
+const ENV         = process.env.NODE_ENV || "development";
+const { ApolloServer, gql, PubSub, withFilter } = require('apollo-server');
+const {makeExecutableSchema} = require('graphql-tools');
 const knexConfig = require('./knexfile');
 
 const knex = require('knex')(knexConfig[ENV]);
+
+const pubsub = new PubSub();
 
 const typeDefs = gql`
   # Comments in GraphQL are defined with the hash (#) symbol.
@@ -88,7 +95,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createMessage(username: String, Group_name: String, text: String): Message
+    createMessage(userid: Int, Group_name: String, text: String): Message
     #changeUserLocation(username: String, lat: Float, long: Float): User
     createGroup(Group_name: String,): Group
     #deleteGroup(GroupName: String): Group
@@ -98,9 +105,14 @@ const typeDefs = gql`
     #changeUsername()
   }
   
+  type Subscription {
+    messageAdded(groupId: ID!): Message
+  }
 `;
 
-// Resolvers define the technique for fetching the types defined in the schema.  
+// Resolvers define the technique for fetching the types defined in the schema. 
+
+const MESSAGE_ADDED = 'messageAdded';
 
 const resolvers = {
   Query: {
@@ -174,37 +186,53 @@ const resolvers = {
 
 
   Mutation: {
-    createMessage: (root, {username, Group_name, text}, context, info) => {
-      let userID = knex('users').where('username', username).then((resultUserID) => resultUserID)
-      let groupID = knex("groups").where("Group_name", Group_name).then((resultGroupID) => resultGroupID)
-      return Promise.all([userID,groupID]).then((result) => {
-          groupID = result[1][0].id
-          userID = result[0][0].id
-          console.log(groupID)
-          console.log(userID)
-          knex('messages').insert({text: text, group_id: groupID, user_id: userID }).then((result) => result)
+    createMessage: (root, {userID, Group_name, text}, context, info) => {
+      pubsub.publish(MESSAGE_ADDED, { messageAdded: {userID, Group_name, text} });
+      return knex("groups").where("Group_name", Group_name)
+        .then(result => {
+        const groupID = result[0].id;
+      return knex('messages').returning("*").insert({text: text, group_id: groupID, user_id: userID })
+      }).then((result) => {
+        return result[0];
       })
     },
     createGroup: (root, {Group_name}, context, info) => {
         return knex()
     }
+  },
+  Subscription: {
+    messageAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(MESSAGE_ADDED),
+        (payload, variables) => {
+          return payload.groupID === variables.groupID;
+        }
+      )
+    }
   }
 };
 
+// const server = new ApolloServer({ typeDefs, resolvers });
+const schema = makeExecutableSchema({typeDefs, resolvers});
+const server = new ApolloServer({
+  schema,
+  context: async ({ req, connection }) => {
+    if (connection) {
+      // check connection for metadata
+      return connection.context;
+    } else {
+      // check from req
+      const token = req.headers.authorization || "";
 
-
-
-
-
-const server = new ApolloServer({ typeDefs, resolvers });
-server.listen().then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`);
+      return { token };
+    }
+  },
 });
 
+server.listen().then(({ url }) => {
+  console.log(`🚀  Server ready at ${url} 🚀`);
 
-
-
-
+});
 
 
 

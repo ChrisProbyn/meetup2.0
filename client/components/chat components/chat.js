@@ -62,26 +62,6 @@ addMessageMutation = gql`
   }
 
   render() {
-    const AddChannel = ({ mutate }) => {
-      const handleKeyUp = (evt) => {
-        if (evt.keyCode === 13) {
-          evt.persist();
-          mutate({ 
-            variables: { name: evt.target.value }
-          })
-          .then( res => {
-            evt.target.value = '';  
-          });
-        }
-      };
-      return (
-        <input
-          type="text"
-          placeholder="New channel"
-          onKeyUp={handleKeyUp}
-        />
-      );
-    };
     return (
       <GiftedChat 
         messages={this.state.messages}

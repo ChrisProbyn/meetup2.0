@@ -13,7 +13,7 @@ import {
  } from 'react-apollo';
 
  const client = new ApolloClient({
-  uri: "http://192.168.88.68:4000/graphql"
+  uri: "http://192.168.88.70:4000/graphql"
  });
 
 //Import React
@@ -25,14 +25,6 @@ import {
   createAppContainer,
   createSwitchNavigator
 } from 'react-navigation';
-
-const typeDefs =
-`type Channel {
-  id: ID!                # "!" denotes a required field
-  name: String
-}`
-
-
 
 export default class App extends React.Component {
   render() {

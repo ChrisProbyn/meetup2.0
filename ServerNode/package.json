@@ -21,6 +21,7 @@
     "random-email": "^1.0.3",
     "random-name": "^0.1.2",
     "random-sentence": "^1.0.4",
+    "subscriptions-transport-ws": "^0.9.15",
     "uuid": "^3.3.2",
     "ws": "6.1.2"
   }

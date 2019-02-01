@@ -6,8 +6,9 @@ import gql from "graphql-tag";
 
 class Group extends Component {
 
-  onChatPress = (group) => {
-    this.props.navigation.navigate('Chat', {groupName: group});
+  onChatPress = (groupname) => {
+    const userID = this.props.navigation.getParam(userID);
+    this.props.navigation.navigate('Chat', {groupName: groupname, userID: userID});
   }
 
   renderGroupMembers = (group) => {
@@ -28,9 +29,10 @@ class Group extends Component {
   }
 
   render() {
+    const userID = this.props.navigation.getParam("userID")
     const query = gql`
     {
-      user(id:6000){
+      user(id: ${userID}){
         email
         groups{
           Group_name
@@ -67,7 +69,7 @@ class Group extends Component {
               mainContentStyle = styles.mainContent;
             }
             return(
-              <TouchableOpacity onPress={() => {this.onChatPress(item.Group_name)}}>
+              <TouchableOpacity onPress={() => {this.onChatPress(Group.Group_name)}}>
               <View style={styles.container} >
                 <View style={styles.content}>
                   <View style={mainContentStyle}>

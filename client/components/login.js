@@ -91,7 +91,7 @@ export default class Login extends Component {
           );
         } else {
         if(value.password === userPassword) {
-          this.props.navigation.navigate('Group', userID=userID);
+          this.props.navigation.navigate('Group', {userID: userID});
         } else{
           Alert.alert(
             'Wrong Password',
