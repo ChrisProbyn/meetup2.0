@@ -84,6 +84,7 @@ const typeDefs = gql`
     locations: [Location]
     location: Location
     groups: [Group]
+    group(id: ID): Group
     users: [User]
     user(id: ID): User
     places: [Place]
@@ -148,6 +149,9 @@ const resolvers = {
     },
     messages: () => {
       return knex('messages');
+    },
+    group: (root, args, context, info) =>{
+        return knex('groups').where('id', args.id).then(group => group[0])
     }
     
   },
@@ -172,11 +176,11 @@ const resolvers = {
     users(group) {
       return knex('users').leftJoin('members', 'users.id', 'members.user_id').leftJoin('groups', "members.group_id", "groups.id").where('Group_name', `${group.Group_name}`);
     },
-    // users: {
-    //   messages(group,user) {
-    //     return knex.table('users').leftJoin('groups', 'users.group_id', 'groups.id').leftJoin("messages","users.id", "messages.user_id").where("Group_name","Group 1").andWhere("username","bob")
-    //   }
-    // }
+    
+      messages(group) {
+        return knex.table('groups').leftJoin('messages', 'messages.group_id', 'groups.id').where("Group_name", `${group.Group_name}`);
+      }
+    
   },
   // User: {
   //   nightlife_preferences(user) {
