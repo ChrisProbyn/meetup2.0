@@ -49,8 +49,8 @@ export default class Chat extends Component {
           createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
           user: {
             _id: 2,
-            name: 'React Native',
-            avatar: 'https://facebook.github.io/react/img/logo_og.png',
+            username: 'React Native',
+            avatar: 'https://placeimg.com/140/140/any',
           },
         },
       ],
@@ -72,7 +72,10 @@ export default class Chat extends Component {
         {(createMessage, {data}) => (
           <GiftedChat
           messages={this.state.messages}
-          onSend={this.onSend}
+          onSend={messages => this.onSend(messages)}
+          user={{
+            _id: 1,
+          }}
         />
         )}
       </Mutation>
