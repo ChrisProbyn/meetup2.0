@@ -114,7 +114,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createMessage(userid: Int, Group_name: String, text: String): Message
+    createMessage(userID: Int!, Group_name: String!, text: String!): Message
     #changeUserLocation(username: String, lat: Float, long: Float): User
     createGroup(Group_name: String, userID: ID): Group
     createUser(email: String, username: String, password: String): User
@@ -126,7 +126,7 @@ const typeDefs = gql`
   }
   
   type Subscription {
-    messageAdded(groupId: ID!): Message
+    messageAdded(groupId: Int!): Message
   }
 `;
 
@@ -218,7 +218,7 @@ const resolvers = {
 
   Mutation: {
     createMessage: (root, {userID, Group_name, text}, context, info) => {
-      pubsub.publish(MESSAGE_ADDED, { messageAdded: {userID, Group_name, text} });
+      pubsub.publish(MESSAGE_ADDED, { [MESSAGE_ADDED]: {userID, Group_name, text} });
       return knex("groups").where("Group_name", Group_name)
         .then(result => {
         const groupID = result[0].id;
@@ -253,6 +253,7 @@ const resolvers = {
 };
 
 // const server = new ApolloServer({ typeDefs, resolvers });
+
 const schema = makeExecutableSchema({typeDefs, resolvers});
 const server = new ApolloServer({
   schema,
