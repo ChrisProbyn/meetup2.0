@@ -196,7 +196,7 @@ const resolvers = {
     },
     
       messages(group) {
-        return knex.table('groups').leftJoin('messages', 'messages.group_id', 'groups.id').leftJoin("users", "users.id", "messages.user_id").where("Group_name", `${group.Group_name}`);
+        return knex.table('groups').leftJoin('messages', 'messages.group_id', 'groups.id').where("Group_name", `${group.Group_name}`);
         // knex.table('groups').leftJoin('messages', 'messages.group_id','groups.id').leftJoin("users", "users.id", "messages.user_id").where("Group_name", `${group.Group_name}`).then((result) => {
         //   return convertMessageToGiftedChatFormat(result)
         
