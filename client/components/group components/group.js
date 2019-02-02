@@ -16,6 +16,11 @@ export default class Group extends React.Component {
     }
     this.changeNavState = this.changeNavState.bind(this);
   }
+  static navigationOptions =({navigation}) => {
+    return {
+      button: require("../assets/add-icon.png")
+    }
+  }
 
   changeNavState = (event) =>{
     this.setState({

@@ -4,6 +4,10 @@ import t from 'tcomb-form-native';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
+import ApolloClient from "apollo-boost"
+const apolloClient = new ApolloClient({
+  uri: "http://192.168.88.68:4000/graphql"
+ });
 const Form = t.form.Form;
 const User = t.struct({
     email: t.String,
@@ -53,36 +57,48 @@ const User = t.struct({
   const options = {
     fields: {
       email: {
-        
+      
       },
       password: {
-        
+       
       },
       terms: {
-       
+      
       },
     },
     stylesheet: formStyles,
   };
 
 export default class Login extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      value: {
+        username: 'Giulio',
+        password: 'Canti'
+      }
+    }
+  }
     handleSubmitLogin = (data) => {
         const users = data.users;
         const value = this._form.getValue();
+    
         let userPassword = "";
         let userID;
         
         if(value){
-        for(var user of users){
+        for(let user of users){
           if (user.email === value.email) {
+     
             userPassword = user.password
             userID = user.id;
+            
           } 
         }
         if(!userPassword){
           Alert.alert(
-            'Email does not exist',
-            'there is no registered user with that email',
+            'Incorrect Credentials',
+            'Incorrect Credentials',
             [
               
               {text: 'OK', onPress: () => console.log('OK Pressed')},
@@ -94,8 +110,8 @@ export default class Login extends Component {
           this.props.navigation.navigate('Group', {userID: userID});
         } else{
           Alert.alert(
-            'Wrong Password',
-            'incorrect password',
+            'Incorrect Credentials',
+            'Incorrect Credentials',
             [
               
               {text: 'OK', onPress: () => console.log('OK Pressed')},
@@ -103,43 +119,101 @@ export default class Login extends Component {
             {cancelable: false},
           );
           //need to display error
+          }
         }
       }
+       
     }
+    validateEmail(email) 
+    {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+    }
+    handleSubmitSignup = (data) => {
+      const users = data.users;
+      const value = this._form.getValue();
+      
+      
+      if(value && !value.terms){
+        Alert.alert(
+          'Agree to terms',
+          'Agree to terms',
+          [
+            
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          {cancelable: false},
+        )
+      }else if(value && value.terms) {
        
-      }
-      handleSubmitSignup = () => {
-        const users = this.props.users;
-        const value = this._form.getValue();
-        console.log(value)
-        if(value){
-          for(var user of users){
-            if (user.email === value.email) {
-              //error existing email
-            } 
-          }
-          let newUser = {
-            email: value.email,
-            password: value.password,
-            username: value.username
-          }
-          this.props.addUser(newUser)
-       
+        for(var user of users){
+          if (user.email === value.email) {
+    
+            Alert.alert(
+              'Incorrect Credentials',
+              'Incorrect Credentials',
+              [
+                
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ],
+              {cancelable: false},
+            )
+          } 
         }
+        if(this.validateEmail(value.email)){
+        let newUser = {
+          email: value.email,
+          password: value.password,
+          username: value.username
+        }
+       
+        apolloClient.mutate({
+          variables: { email: newUser.email, username: newUser.username, password: newUser.password },
+          mutation: gql`
+            mutation CreateUser($email: String, $username: String,  $password: String) {
+            createUser(email: $email, username: $username,  password: $password) {
+             id
+             username
+            }
+           }
+          `,
+          
+        })
+        .then(result => { this.props.navigation.navigate('Group', {userID: result.data.createUser.id}) })
+        .catch(error => { console.log(error) });
+      } else {
+        Alert.alert(
+          'Invalid email',
+          'Invalid email',
+          [
+            
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          {cancelable: false},
+        )
       }
-      onPress = () => {
-        this.props.navigation.navigate('Group');
+      }
     }
+
     render() {
       const query = gql`
       {
         users{
+          id
           email
           username
           password
         }
        }`
-
+       const createUser = gql`
+       mutation CreateUser($email: String, $username: String,  $password: String) {
+        createUser(email: $email, username: $username,  password: $password) {
+         id
+         username
+        }
+       }
+       `
+      //  const formValue =this._form.getValue() || false;
       return (
         <Query query={query}>
         {({loading, error, data}) => {
@@ -161,9 +235,10 @@ export default class Login extends Component {
           />
           <Button
             title="Sign Up!"
-            onPress={this.handleSubmitSignup}
+            onPress={() => {this.handleSubmitSignup(data)}}
             color="white"
           />
+         
         </View>
           );
         }}
@@ -171,4 +246,3 @@ export default class Login extends Component {
       );
     }
   }
-

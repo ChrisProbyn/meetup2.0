@@ -3,7 +3,7 @@ import Main from './components/main.js';
 import Chat from './components/chat.js';
 import Landing from './components/landing.js';
 import Group from './components/group.js';
-
+import CreateGroup from './components/creategroup.js';
 //Import Apollo
 import ApolloClient from "apollo-boost";
 import {
@@ -13,7 +13,7 @@ import {
  } from 'react-apollo';
 
  const client = new ApolloClient({
-  uri: "http://192.168.88.70:4000/graphql"
+  uri: "http://192.168.88.68:4000/graphql"
  });
 
 //Import React
@@ -50,6 +50,9 @@ const AppNavigator = createStackNavigator({
   },
   Landing: {
     screen: Landing
+  },
+  CreateGroup: {
+    screen: CreateGroup
   }
 });
 

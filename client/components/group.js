@@ -30,6 +30,7 @@ class Group extends Component {
 
   render() {
     const userID = this.props.navigation.getParam("userID")
+    console.log(userID)
     const query = gql`
     {
       user(id: ${userID}){
@@ -69,7 +70,9 @@ class Group extends Component {
               mainContentStyle = styles.mainContent;
             }
             return(
-              <TouchableOpacity onPress={() => {this.onChatPress(Group.Group_name)}}>
+              <View>
+              {Group.id != false  && 
+              <TouchableOpacity onPress={() => {this.onChatPress(Group.id)}}>
               <View style={styles.container} >
                 <View style={styles.content}>
                   <View style={mainContentStyle}>
@@ -87,6 +90,8 @@ class Group extends Component {
                 </View>
               </View>
               </TouchableOpacity>
+              }
+              </View>
             );
           }}/>
         );

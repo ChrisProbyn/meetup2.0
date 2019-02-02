@@ -7,7 +7,7 @@ class Main extends Component {
   }
 
   onPress = () => {
-      this.props.navigation.navigate('Group', {userID: 6000});
+      this.props.navigation.navigate('Landing');
   }
 
   render() {
