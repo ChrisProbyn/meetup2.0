@@ -69,9 +69,9 @@ class Group extends Component {
             if(Group.attachment) {
               mainContentStyle = styles.mainContent;
             }
+            if(Group.id) {
             return(
-              <View>
-              {Group.id != false  && 
+              
               <TouchableOpacity onPress={() => {this.onChatPress(Group.id)}}>
               <View style={styles.container} >
                 <View style={styles.content}>
@@ -90,9 +90,11 @@ class Group extends Component {
                 </View>
               </View>
               </TouchableOpacity>
-              }
-              </View>
+             
             );
+            }else {
+              return <FlatList></FlatList>
+            }
           }}/>
         );
       }}
