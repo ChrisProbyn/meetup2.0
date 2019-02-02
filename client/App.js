@@ -7,8 +7,6 @@ import Group from './components/group.js';
 //Import Apollo
 import ApolloClient from "apollo-boost";
 import {
-  gql,
-  graphql,
   ApolloProvider,
  } from 'react-apollo';
 
@@ -23,7 +21,7 @@ import React from 'react';
 import {
   createStackNavigator,
   createAppContainer,
-  createSwitchNavigator
+  createSwitchNavigator,
 } from 'react-navigation';
 
 export default class App extends React.Component {

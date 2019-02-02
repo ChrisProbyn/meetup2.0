@@ -73,7 +73,7 @@ const typeDefs = gql`
     Pub: Int
   }
   type Group {
-    id: ID!
+    id: Int
     Group_name: String
     messages: [Message]
     users: [User]
@@ -103,7 +103,7 @@ const typeDefs = gql`
     locations: [Location]
     location: Location
     groups: [Group]
-    group(id: ID): Group
+    group(id: Int): Group
     users: [User]
     user(id: ID): User
     places: [Place]
@@ -196,7 +196,7 @@ const resolvers = {
     },
     
       messages(group) {
-        return knex.table('groups').leftJoin('messages', 'messages.group_id', 'groups.id').leftJoin("users", "users.id", "messages.user_id").where("Group_name", `${group.Group_name}`);
+        return knex.table('groups').leftJoin('messages', 'messages.group_id', 'groups.id').where("groups.id", `${group.id}`);
         // knex.table('groups').leftJoin('messages', 'messages.group_id','groups.id').leftJoin("users", "users.id", "messages.user_id").where("Group_name", `${group.Group_name}`).then((result) => {
         //   return convertMessageToGiftedChatFormat(result)
         

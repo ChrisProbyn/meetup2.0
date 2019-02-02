@@ -68,12 +68,13 @@ const User = t.struct({
 export default class Login extends Component {
     handleSubmitLogin = (data) => {
         const users = data.users;
+        console.log(users);
         const value = this._form.getValue();
         let userPassword = "";
         let userID;
         
         if(value){
-        for(var user of users){
+        for(let user of users){
           if (user.email === value.email) {
             userPassword = user.password
             userID = user.id;
@@ -127,13 +128,11 @@ export default class Login extends Component {
        
         }
       }
-      onPress = () => {
-        this.props.navigation.navigate('Group');
-    }
     render() {
       const query = gql`
       {
         users{
+          id
           email
           username
           password

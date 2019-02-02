@@ -1,14 +1,25 @@
 import React, { Component } from 'react';
-import { View, FlatList, ActivityIndicator, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { List, ListItem, SearchBar } from 'react-native-elements';
+import { View, FlatList, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
 class Group extends Component {
+  static navigationOptions = {
+    title: 'Groups',
+    headerLeft: null,
+    headerRight: (
+      <Button
+        onPress={() => alert('This is a button!')}
+        title="create group"
+        color="orange"
+      />
+    ),
+  };
 
   onChatPress = (groupname) => {
-    const userID = this.props.navigation.getParam(userID);
-    this.props.navigation.navigate('Chat', {groupName: groupname, userID: userID});
+    const userID = this.props.navigation.getParam('userID');
+    console.log('pass userid', userID);
+    this.props.navigation.navigate('Chat', {userID: userID});
   }
 
   renderGroupMembers = (group) => {
@@ -29,10 +40,11 @@ class Group extends Component {
   }
 
   render() {
-    const userID = this.props.navigation.getParam("userID")
+    const userid = this.props.navigation.getParam('userID')
+    console.log('userid:', userid)
     const query = gql`
     {
-      user(id: ${userID}){
+      user(id: 6000){
         email
         groups{
           Group_name
