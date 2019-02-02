@@ -18,6 +18,25 @@ const knex = require('knex')(knexConfig[ENV]);
 
 const pubsub = new PubSub();
 
+const convertMessageToGiftedChatFormat = (messages) => {
+  let newArray = []
+  for(let message of messages){
+    if(message.user_id){ 
+     newArray.push( {
+       _id: message.id,
+       user: {
+         _id: message.user_id,
+         name: message.username
+       },
+       text: message.text,
+       createdAt: message.created_at
+     })
+   }
+ }
+   return newArray
+   
+ }
+
 const typeDefs = gql`
   # Comments in GraphQL are defined with the hash (#) symbol.
   type Location {
@@ -89,7 +108,6 @@ const typeDefs = gql`
     user(id: ID): User
     places: [Place]
     messages: [Message]
-    channels: [Channel]
     
     food_preferences: [Food_preferences]
     nightlife_preferences: Nightlife_preferences
@@ -98,7 +116,7 @@ const typeDefs = gql`
   type Mutation {
     createMessage(userID: Int!, Group_name: String!, text: String!): Message
     #changeUserLocation(username: String, lat: Float, long: Float): User
-    createGroup(Group_name: String,): Group
+    createGroup(Group_name: String, userID: ID): Group
     #deleteGroup(GroupName: String): Group
     #createPlace()
     #changeUserResterauntPreference():
@@ -151,7 +169,7 @@ const resolvers = {
       return knex('messages');
     },
     group: (root, args, context, info) =>{
-      return knex('groups').where('id', args.id).then(group => group[0])
+        return knex('groups').where('id', args.id).then(group => group[0])
     }
     
   },
@@ -176,21 +194,26 @@ const resolvers = {
     users(group) {
       return knex('users').leftJoin('members', 'users.id', 'members.user_id').leftJoin('groups', "members.group_id", "groups.id").where('Group_name', `${group.Group_name}`);
     },
-    messages(group) {
-      return knex.table('groups').leftJoin('messages', 'messages.group_id', 'groups.id').where("Group_name", `${group.Group_name}`);
+    
+      messages(group) {
+        return knex.table('groups').leftJoin('messages', 'messages.group_id', 'groups.id').leftJoin("users", "users.id", "messages.user_id").where("Group_name", `${group.Group_name}`);
+        // knex.table('groups').leftJoin('messages', 'messages.group_id','groups.id').leftJoin("users", "users.id", "messages.user_id").where("Group_name", `${group.Group_name}`).then((result) => {
+        //   return convertMessageToGiftedChatFormat(result)
+        
+        // })
+      }
+    
+  },
+  Message: {
+    user(message) {
+      return knex('messages').leftJoin('users','messages.user_id',"users.id").where("messages.id", `${message.id}`).first("users.id", "email", "username");
     }
-    // users: {
-    //   messages(group,user) {
-    //     return knex.table('users').leftJoin('groups', 'users.group_id', 'groups.id').leftJoin("messages","users.id", "messages.user_id").where("Group_name","Group 1").andWhere("username","bob")
-    //   }
-    // }
   },
   // User: {
   //   nightlife_preferences(user) {
   //     return knex.table('users').leftJoin('nightlife_preferences', 'users.nightlife_preferences_id', 'nightlife_preferences.id').where('username', `bob`).first('Nightclub',"Bar","Pub");
   //   }
   // }
-
 
   Mutation: {
     createMessage: (root, {userID, Group_name, text}, context, info) => {
@@ -203,8 +226,14 @@ const resolvers = {
         return result[0];
       })
     },
-    createGroup: (root, {Group_name}, context, info) => {
-        return knex()
+    createGroup: (root, {Group_name, userID}, context, info) => {
+      knex('groups').returning("*").insert({Group_name: Group_name}).then((result) => {
+        let newGroupId = result[0].id;
+        return knex('members').returning('*').insert({group_id: newGroupId, user_id: userID})
+      
+      }).then((result) => {
+          return result[0];
+      })
     }
   },
   Subscription: {
