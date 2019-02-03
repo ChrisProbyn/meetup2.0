@@ -6,6 +6,10 @@ class Main extends Component {
       backgroundImage: require("../assets/background.png")
   }
 
+  static navigationOptions = {
+    header: null,
+    };    
+
   onPress = () => {
       this.props.navigation.navigate('Landing');
   }

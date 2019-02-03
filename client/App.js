@@ -3,7 +3,7 @@ import Main from './components/main.js';
 import Chat from './components/chat.js';
 import Landing from './components/landing.js';
 import Group from './components/group.js';
-
+import CreateGroup from './components/creategroup.js';
 //Import Apollo
 import ApolloClient from "apollo-boost";
 import {
@@ -48,6 +48,9 @@ const AppNavigator = createStackNavigator({
   },
   Landing: {
     screen: Landing
+  },
+  CreateGroup: {
+    screen: CreateGroup
   }
 });
 

@@ -1,8 +1,12 @@
 import React, {Component} from 'react';
 import {StyleSheet, ImageBackground} from 'react-native';
-import Login from './login.js'
+import Login from './login.js';
+import  navigationOptions from 'react-navigation';
 
 export default class Landing extends Component {
+  static navigationOptions = {
+    header: null
+  };
 
     state = {
         backgroundImage: require("../assets/background.png")

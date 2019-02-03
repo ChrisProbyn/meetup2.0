@@ -4,22 +4,26 @@ import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
 class Group extends Component {
-  static navigationOptions = {
-    title: 'Groups',
-    headerLeft: null,
-    headerRight: (
-      <Button
-        onPress={() => alert('This is a button!')}
-        title="create group"
-        color="orange"
-      />
-    ),
+  static navigationOptions = ({navigation}) => {
+    return {
+      title: 'Groups',
+      headerLeft: null,
+      headerRight: (
+        <Button
+          onPress={() => {
+            const userID = navigation.getParam('userID');
+            navigation.navigate('CreateGroup', {userID: userID})
+          }}
+          title="create group"
+          color="orange"
+        />
+      ),
+    }
   };
 
-  onChatPress = (groupname) => {
+  onChatPress = (groupid) => {
     const userID = this.props.navigation.getParam('userID');
-    console.log('pass userid', userID);
-    this.props.navigation.navigate('Chat', {userID: userID});
+    this.props.navigation.navigate('Chat', {userID: userID, groupID: groupid});
   }
 
   renderGroupMembers = (group) => {
@@ -40,13 +44,13 @@ class Group extends Component {
   }
 
   render() {
-    const userid = this.props.navigation.getParam('userID')
-    console.log('userid:', userid)
+    const userID = this.props.navigation.getParam('userID')
     const query = gql`
     {
-      user(id: 6000){
+      user(id: ${userID}){
         email
         groups{
+          id
           Group_name
           users{
             username
@@ -80,8 +84,9 @@ class Group extends Component {
             if(Group.attachment) {
               mainContentStyle = styles.mainContent;
             }
+            if(Group.id) {
             return(
-              <TouchableOpacity onPress={() => {this.onChatPress(Group.Group_name)}}>
+              <TouchableOpacity onPress={() => {this.onChatPress(Group.id)}}>
               <View style={styles.container} >
                 <View style={styles.content}>
                   <View style={mainContentStyle}>
@@ -99,7 +104,11 @@ class Group extends Component {
                 </View>
               </View>
               </TouchableOpacity>
+             
             );
+            }else {
+              return <FlatList></FlatList>
+            }
           }}/>
         );
       }}
