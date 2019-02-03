@@ -78,6 +78,11 @@ const typeDefs = gql`
     messages: [Message]
     users: [User]
   }
+  type Member {
+    id: ID!
+    group_id: Int
+    user_id: Int
+  }
 
   type User {
     id: ID!
@@ -116,7 +121,7 @@ const typeDefs = gql`
   type Mutation {
     createMessage(userID: Int!, Group_name: String!, text: String!): Message
     #changeUserLocation(username: String, lat: Float, long: Float): User
-    createGroup(Group_name: String, userID: ID): Group
+    createGroup(Group_name: String, userID: ID): Member
     createUser(email: String, username: String, password: String): User
     #deleteGroup(GroupName: String): Group
     #createPlace()
@@ -227,8 +232,8 @@ const resolvers = {
         return result[0];
       })
     },
-    createGroup: (root, {Groupname, userID}, context, info) => {
-      knex('groups').returning("*").insert({Group_name: Groupname}).then((result) => {
+    createGroup: (root, {Group_name, userID}, context, info) => {
+      return knex('groups').returning("*").insert({Group_name: Group_name}).then((result) => {
         let newGroupId = result[0].id;
         return knex('members').returning('*').insert({group_id: newGroupId, user_id: userID})
       
