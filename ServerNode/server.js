@@ -104,12 +104,6 @@ const typeDefs = gql`
     created_at: String
   }
 
-  type Member {
-    id: ID!
-    group_id: Int
-    user_id: Int
-  }
-
   type Query {
     locations: [Location]
     location: Location
