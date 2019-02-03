@@ -198,7 +198,7 @@ const resolvers = {
   },
   Group:{
     users(group) {
-      return knex('groups').leftJoin('members', 'groups.id', 'members.group_id').leftJoin('users', "members.user_id", "users.id").where('groups.id', `${group.id}`).then(user => user[0]);
+      return knex('groups').leftJoin('members', 'groups.id', 'members.group_id').leftJoin('users', "members.user_id", "users.id").where('groups.id', `${group.id}`).then(user => user);
     },
     
       messages(group) {

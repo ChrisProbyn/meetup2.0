@@ -4,6 +4,8 @@ import Chat from './components/chat.js';
 import Landing from './components/landing.js';
 import Group from './components/group.js';
 import CreateGroup from './components/creategroup.js';
+import Map from './components/map.js';
+
 //Import Apollo
 import ApolloClient from "apollo-boost";
 import {
@@ -51,6 +53,9 @@ const AppNavigator = createStackNavigator({
   },
   CreateGroup: {
     screen: CreateGroup
+  },
+  Map: {
+    screen: Map
   }
 });
 
