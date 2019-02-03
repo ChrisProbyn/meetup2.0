@@ -78,6 +78,11 @@ const typeDefs = gql`
     messages: [Message]
     users: [User]
   }
+  type Member {
+    id: ID!
+    group_id: Int
+    user_id: Int
+  }
 
   type User {
     id: ID!
@@ -97,12 +102,6 @@ const typeDefs = gql`
     user: User
     text: String
     created_at: String
-  }
-
-  type Member {
-    id: ID!
-    group_id: Int
-    user_id: Int
   }
 
   type Query {
@@ -232,8 +231,8 @@ const resolvers = {
         return result[0];
       })
     },
-    createGroup: (root, {Groupname, userID}, context, info) => {
-      knex('groups').returning("*").insert({Group_name: Groupname}).then((result) => {
+    createGroup: (root, {Group_name, userID}, context, info) => {
+      return knex('groups').returning("*").insert({Group_name: Group_name}).then((result) => {
         let newGroupId = result[0].id;
         return knex('members').returning('*').insert({group_id: newGroupId, user_id: userID})
       

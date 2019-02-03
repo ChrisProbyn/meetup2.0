@@ -3,6 +3,11 @@ import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, } from 'react-native';
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
+import ApolloClient from "apollo-boost"
+
+const apolloClient = new ApolloClient({
+  uri: "http://192.168.88.68:4000/graphql"
+ });
 
 export default class CreateGroup extends Component {
   state = {
@@ -14,7 +19,7 @@ export default class CreateGroup extends Component {
 
   render() {
     const createGroup = gql`
-        mutation CreateGroup($Group_name: String, $userID: Int) {
+        mutation CreateGroup($Group_name: String, $userID: ID) {
           createGroup(Group_name: $Group_name, userID: $userID) {
             id
             group_id
@@ -22,13 +27,33 @@ export default class CreateGroup extends Component {
       } 
     }
     `
-    createNewGroup = (createGroup) => {
+    sendComplete = (data) => {
+      console.log(data)
+    }
+    createNewGroup = () => {
+      
+      const groupname = this.state.grpname;
+      console.log(groupname)
       const userID = this.props.navigation.getParam("userID")
-      createGroup({variables:{Group_name: this.state.grpname, userID: userID }})
+      console.log(userID)
+      
+      apolloClient.mutate({
+        variables: { Group_name: groupname, userID: userID},
+        mutation: gql`
+          mutation CreateGroup($Group_name: String, $userID: ID) {
+          createGroup(Group_name: $Group_name, userID: $userID) {
+            id
+            group_id
+            user_id
+          } 
+        }
+        `,
+        
+      })
+      .then(result => { this.props.navigation.navigate('Group',{userID: result.data.createGroup.user_id})})
+      .catch(error => { console.log(error) });
     }
     return (
-      <Mutation mutation={createGroup} onCompleted={this.sendComplete}>
-      {(createGroup, {data}) => (
       <View style={styles.container}>
       <Text style={styles.title}>Enter your group name:</Text>
       <TextInput
@@ -37,12 +62,12 @@ export default class CreateGroup extends Component {
         placeHolder="Group"
         
       />
-      <TouchableOpacity onPress={() => createNewGroup(createGroup)}>
+      <TouchableOpacity onPress={() => createNewGroup()}>
         <Text style={styles.buttonText}>Create</Text>
       </TouchableOpacity>
     </View>
-      )}
-    </Mutation>
+      
+
     );
   }
 }
