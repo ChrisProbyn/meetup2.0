@@ -5,9 +5,11 @@ import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
 import ApolloClient from "apollo-boost"
+
 const apolloClient = new ApolloClient({
-  uri: "http://192.168.88.68:4000/graphql"
+  uri: "http://192.168.88.70:4000/graphql"
  });
+
 const Form = t.form.Form;
 const User = t.struct({
     email: t.String,
@@ -72,12 +74,6 @@ const User = t.struct({
 export default class Login extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      value: {
-        username: 'Giulio',
-        password: 'Canti'
-      }
-    }
   }
     handleSubmitLogin = (data) => {
         const users = data.users;
@@ -179,7 +175,7 @@ export default class Login extends Component {
           `,
           
         })
-        .then(result => { this.props.navigation.navigate('Group', {userID: result.data.createUser.id}) })
+        .then(result => { this.props.navigation.navigate('Group',{userID: result.data.createUser.id}) })
         .catch(error => { console.log(error) });
       } else {
         Alert.alert(
@@ -205,14 +201,6 @@ export default class Login extends Component {
           password
         }
        }`
-       const createUser = gql`
-       mutation CreateUser($email: String, $username: String,  $password: String) {
-        createUser(email: $email, username: $username,  password: $password) {
-         id
-         username
-        }
-       }
-       `
       //  const formValue =this._form.getValue() || false;
       return (
         <Query query={query}>

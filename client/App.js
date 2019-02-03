@@ -7,13 +7,11 @@ import CreateGroup from './components/creategroup.js';
 //Import Apollo
 import ApolloClient from "apollo-boost";
 import {
-  gql,
-  graphql,
   ApolloProvider,
  } from 'react-apollo';
 
  const client = new ApolloClient({
-  uri: "http://192.168.88.68:4000/graphql"
+  uri: "http://192.168.88.70:4000/graphql"
  });
 
 //Import React
@@ -23,7 +21,7 @@ import React from 'react';
 import {
   createStackNavigator,
   createAppContainer,
-  createSwitchNavigator
+  createSwitchNavigator,
 } from 'react-navigation';
 
 export default class App extends React.Component {

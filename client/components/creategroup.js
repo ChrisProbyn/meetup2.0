@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
-import { View, FlatList, ActivityIndicator, Text, StyleSheet, TouchableOpacity, TextInput, } from 'react-native';
-import { List, ListItem, SearchBar } from 'react-native-elements';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, } from 'react-native';
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 
@@ -14,17 +13,18 @@ export default class CreateGroup extends Component {
   onChangeText = grpname => this.setState({ grpname }); 
 
   render() {
-    const userID = this.props.navigation.getParam("userID")
     const createGroup = gql`
         mutation CreateGroup($Group_name: String, $userID: Int) {
           createGroup(Group_name: $Group_name, userID: $userID) {
             id
-            Group_name
+            group_id
+            user_id
       } 
     }
     `
-    createNewGroup = () => {
-
+    createNewGroup = (createGroup) => {
+      const userID = this.props.navigation.getParam("userID")
+      createGroup({variables:{Group_name: this.state.grpname, userID: userID }})
     }
     return (
       <Mutation mutation={createGroup} onCompleted={this.sendComplete}>
@@ -37,7 +37,7 @@ export default class CreateGroup extends Component {
         placeHolder="Group"
         
       />
-      <TouchableOpacity onPress={() => createGroup({variables:{Group_name: this.state.grpname, userID: userID }})}>
+      <TouchableOpacity onPress={() => createNewGroup(createGroup)}>
         <Text style={styles.buttonText}>Create</Text>
       </TouchableOpacity>
     </View>

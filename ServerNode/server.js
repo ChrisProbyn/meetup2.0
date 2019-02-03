@@ -73,7 +73,7 @@ const typeDefs = gql`
     Pub: Int
   }
   type Group {
-    id: ID!
+    id: Int
     Group_name: String
     messages: [Message]
     users: [User]
@@ -104,11 +104,17 @@ const typeDefs = gql`
     created_at: String
   }
 
+  type Member {
+    id: ID!
+    group_id: Int
+    user_id: Int
+  }
+
   type Query {
     locations: [Location]
     location: Location
     groups: [Group]
-    group(id: ID): Group
+    group(id: Int): Group
     users: [User]
     user(id: ID): User
     places: [Place]
@@ -208,7 +214,6 @@ const resolvers = {
         
         // })
       }
-    
   },
   Message: {
     user(message) {

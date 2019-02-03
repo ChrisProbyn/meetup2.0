@@ -5,7 +5,7 @@ import  navigationOptions from 'react-navigation';
 
 export default class Landing extends Component {
   static navigationOptions = {
-    title: 'Home',
+    header: null
   };
 
     state = {
