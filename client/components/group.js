@@ -61,7 +61,7 @@ class Group extends Component {
      }`
 
     return (
-      <Query query={query}>
+      <Query query={query} pollInterval={50}>
       {({loading, error, data}) => {
         if(loading) return <Text>Loading Container...</Text>;
         if(error) return <Text>Group Component ERROR! {error}</Text>;

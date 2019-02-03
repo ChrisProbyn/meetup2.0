@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 import ApolloClient from "apollo-boost"
 
 const apolloClient = new ApolloClient({
-  uri: "http://192.168.88.68:4000/graphql"
+  uri: "http://192.168.88.70:4000/graphql"
  });
 
 export default class CreateGroup extends Component {
@@ -18,25 +18,9 @@ export default class CreateGroup extends Component {
   onChangeText = grpname => this.setState({ grpname }); 
 
   render() {
-    const createGroup = gql`
-        mutation CreateGroup($Group_name: String, $userID: ID) {
-          createGroup(Group_name: $Group_name, userID: $userID) {
-            id
-            group_id
-            user_id
-      } 
-    }
-    `
-    sendComplete = (data) => {
-      console.log(data)
-    }
-    createNewGroup = () => {
-      
+     createNewGroup = () => {
       const groupname = this.state.grpname;
-      console.log(groupname)
-      const userID = this.props.navigation.getParam("userID")
-      console.log(userID)
-      
+      const userID = this.props.navigation.getParam("userID")    
       apolloClient.mutate({
         variables: { Group_name: groupname, userID: userID},
         mutation: gql`
@@ -60,14 +44,12 @@ export default class CreateGroup extends Component {
         onChangeText={this.onChangeText}
         style={styles.nameInput}
         placeHolder="Group"
-        
       />
-      <TouchableOpacity onPress={() => createNewGroup()}>
-        <Text style={styles.buttonText}>Create</Text>
+      <TouchableOpacity >
+        <Button title="Create"
+        onPress={() => createNewGroup()}/>
       </TouchableOpacity>
     </View>
-      
-
     );
   }
 }
