@@ -6,16 +6,7 @@ import {
 } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
 import * as firebase from 'firebase';
-
-// Initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyCukq86r_hmV36tT2Yh7Ro8pvRfKf9-9cI",
-  authDomain: "meetup-1548370413886.firebaseapp.com",
-  databaseURL: "https://meetup-1548370413886.firebaseio.com",
-  projectId: "meetup-1548370413886",
-  storageBucket: "meetup-1548370413886.appspot.com",
-  messagingSenderId: "711622922838"
-};
+import firebaseConfig from './firebase.js'
 
 firebase.initializeApp(firebaseConfig);
 
