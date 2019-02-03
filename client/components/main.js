@@ -11,7 +11,7 @@ class Main extends Component {
     };    
 
   onPress = () => {
-      this.props.navigation.navigate('Landing');
+      this.props.navigation.navigate('Map');
   }
 
   render() {
