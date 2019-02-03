@@ -51,10 +51,7 @@ const typeDefs = gql`
     place_name: String
     location: Location
   }
-  type Channel {
-    id: ID!               
-    name: String
-  }
+
   type Food_preferences {
     id: ID!
     Asian: Int

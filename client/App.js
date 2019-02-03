@@ -1,6 +1,6 @@
 // Import the screens
 import Main from './components/main.js';
-import Chat from './components/chat.js';
+// import Chat from './components/chat.js';
 import Landing from './components/landing.js';
 import Group from './components/group.js';
 import CreateGroup from './components/creategroup.js';
@@ -45,9 +45,9 @@ const AppNavigator = createStackNavigator({
   Group: {
     screen: Group
   },
-  Chat: {
-    screen: Chat
-  },
+  // Chat: {
+  //   screen: Chat
+  // },
   Landing: {
     screen: Landing
   },
