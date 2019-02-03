@@ -30,13 +30,10 @@ export default class CreateGroup extends Component {
     sendComplete = (data) => {
       console.log(data)
     }
-    createNewGroup = () => {
-      
+    createNewGroup = () => { 
       const groupname = this.state.grpname;
-      console.log(groupname)
       const userID = this.props.navigation.getParam("userID")
-      console.log(userID)
-      
+    
       apolloClient.mutate({
         variables: { Group_name: groupname, userID: userID},
         mutation: gql`

@@ -61,7 +61,7 @@ class Group extends Component {
      }`
 
     return (
-      <Query query={query}>
+      <Query query={query} pollInterval={50}>
       {({loading, error, data}) => {
         if(loading) return <Text>Loading Container...</Text>;
         if(error) return <Text>Group Component ERROR! {error}</Text>;
@@ -84,7 +84,7 @@ class Group extends Component {
             if(Group.attachment) {
               mainContentStyle = styles.mainContent;
             }
-            if(Group.id) {
+            // if(Group.id) {
             return(
               <TouchableOpacity onPress={() => {this.onChatPress(Group.id)}}>
               <View style={styles.container} >
@@ -106,9 +106,9 @@ class Group extends Component {
               </TouchableOpacity>
              
             );
-            }else {
-              return <FlatList></FlatList>
-            }
+            // }else {
+            //   return <FlatList></FlatList>
+            // }
           }}/>
         );
       }}
