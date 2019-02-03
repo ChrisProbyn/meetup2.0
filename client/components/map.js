@@ -7,37 +7,6 @@ import gql from 'graphql-tag';
 export default class Map extends Component {
     constructor(props){
         super(props);
-        this.state = {
-            markers: [
-            {
-                coordinate: {
-                  latitude: 49.2834,
-                  longitude: -123.1164
-                },
-                title: "user1",
-                description: "A",
-                key: 1
-            },
-            {
-                coordinate: {
-                  latitude: 49.2844,
-                  longitude: -123.1089
-                },
-                title: "user2",
-                description: "B",
-                key: 2
-            },
-            {
-                coordinate: {
-                  latitude: 49.2757,
-                  longitude: -123.1199
-                },
-                title: "user3",
-                description: "C",
-                key: 3
-            },
-        ]
-        }
     }
 
     mapStyle = [
@@ -247,6 +216,11 @@ export default class Map extends Component {
           ]
         }
       ]
+
+    randomColor() {
+        return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    }
+
     render() {
         // const allMarkers
         const query = gql`
@@ -293,6 +267,7 @@ export default class Map extends Component {
                 }}
                 title={marker.username}
                 key={marker.id}
+                pinColor={this.randomColor()}
                 />
             ))}
           </MapView>
