@@ -4,7 +4,8 @@ import Main from './components/main.js';
 import Landing from './components/landing.js';
 import Group from './components/group.js';
 import CreateGroup from './components/creategroup.js';
-import MapComponent from './components/map.js';
+import Map from './components/map.js';
+
 //Import Apollo
 import ApolloClient from "apollo-boost";
 import {
@@ -54,7 +55,7 @@ const AppNavigator = createStackNavigator({
     screen: CreateGroup
   },
   Map: {
-    screen: MapComponent
+    screen: Map
   }
 });
 
