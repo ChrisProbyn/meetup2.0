@@ -94,7 +94,7 @@ class Group extends Component {
                       <Text style={styles.groupName} >{Group.Group_name}</Text>
                     </View>
                     <Text style={styles.countMembers}>
-                      {Group.countMembers} members
+                      {Group.users.length} members
                     </Text>
                     <Text style={styles.timeAgo}>
                       Updated a few seconds ago

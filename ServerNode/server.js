@@ -120,6 +120,7 @@ const typeDefs = gql`
     #changeUserLocation(username: String, lat: Float, long: Float): User
     createGroup(Group_name: String, userID: ID): Member
     createUser(email: String, username: String, password: String): User
+    addUserToGroup(Group_name: String, email:String): Member
     #deleteGroup(GroupName: String): Group
     #createPlace()
     #changeUserResterauntPreference():
@@ -239,6 +240,18 @@ const resolvers = {
     },
     createUser: (root, {email, username, password}, context, info) => {
       return knex('users').returning("*").insert({email: email, username: username, password: password}).then((user) => user[0]);
+    },
+    addUserToGroup:(root, {Group_name, email}, context, info) => {
+      return knex('groups').where('Group_name', Group_name).returning("*").then((result) => {
+      
+        let groupID = result[0].id;
+        return knex("users").where("email", email).returning("*").then((userResult) => {
+      
+          let userID = userResult[0].id
+          return knex("members").returning("*").insert({group_id: groupID, user_id: userID})
+      
+        })
+      }).then((user) => user[0])
     }
   },
   Subscription: {

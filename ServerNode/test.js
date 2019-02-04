@@ -20,4 +20,5 @@ function Center(points) {
     }, {lat: 0, long: 0});
   };
   const center = Center(points);
-  console.log(center)
+  const test ="hello"
+  console.log(`${test} world`)
