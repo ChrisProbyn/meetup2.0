@@ -4,6 +4,8 @@ import { Text, Button, Alert } from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
+import apikey from "./apikey.js"
+
 
 const flagImage = require('../assets/flag-icon.png')
 const resImage = require('../assets/res-icon.png')
@@ -13,25 +15,26 @@ export default class Map extends Component {
         super(props);
         this.state ={ havePlaces: false}
     }
-    static navigationOptions = ({navigation}) => {
+    static navigationOptions = () => {
         return {
-          title: 'Map',
-          headerRight: (
+            title: 'Map',
+            headerRight: (
             <Button
-              onPress={() => {
+                onPress={() => {
                 Alert.alert('Poll Button Clicked');
-              }}
-              title="Poll"
-              color="green"
+                }}
+                title="Poll"
+                color="green"
             />
-          ),
+            ),
         }
-      };
+    };
 
     componentDidMount(){
-        return fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=49.2790,-123.1187&radius=150&type=restaurant&key=AIzaSyCA6u5xPFKnTN-iyVtUYWsdR9xWOMec14M')
+        return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=49.2790,-123.1187&radius=150&type=restaurant&key=${apikey}`)
           .then((response) => response.json())
           .then((responseJson) => {
+              console.log(responseJson)
             this.setState({
                 havePlaces: true,
                 dataSource: responseJson.results,
