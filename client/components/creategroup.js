@@ -1,19 +1,17 @@
 import React, {Component} from 'react';
-
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 import ApolloClient from "apollo-boost"
 
 const apolloClient = new ApolloClient({
-  uri: "http://192.168.88.68:4000/graphql"
+  uri: "http://192.168.88.70:4000/graphql"
  });
 
 export default class CreateGroup extends Component {
   state = {
     grpname: ""
   }
-  //implement onpress function to link back to group component...
 
   onChangeText = grpname => this.setState({ grpname }); 
 

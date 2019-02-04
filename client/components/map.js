@@ -1,19 +1,32 @@
 import React, {Component} from 'react';
-import MapView, {PROVIDER_GOOGLE, Polyline, ProviderPropType} from 'react-native-maps';
-import { View, Text } from 'react-native';
+import MapView, {PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
+import { Text, Button, Alert } from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
 
-
-
 const flagImage = require('../assets/flag-icon.png')
+const resImage = require('../assets/res-icon.png')
 
 export default class Map extends Component {
     constructor(props){
         super(props);
         this.state ={ havePlaces: false}
     }
+    static navigationOptions = ({navigation}) => {
+        return {
+          title: 'Map',
+          headerRight: (
+            <Button
+              onPress={() => {
+                Alert.alert('Poll Button Clicked');
+              }}
+              title="Poll"
+              color="green"
+            />
+          ),
+        }
+      };
 
     componentDidMount(){
         return fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=49.2790,-123.1187&radius=150&type=restaurant&key=AIzaSyCA6u5xPFKnTN-iyVtUYWsdR9xWOMec14M')
@@ -30,7 +43,7 @@ export default class Map extends Component {
       }
 
     randomColor() {
-        return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';;
     }
 
     renderPlacesMarker() {
@@ -42,8 +55,7 @@ export default class Map extends Component {
                     latitude: place.geometry.location.lat,
                     longitude: place.geometry.location.lng}}
                 title={place.name}
-                image={place.icon}
-                pinColor={"red"}
+                image={resImage}
                 description={`rating: ${place.rating}/5, types: ${place.types[0]}`}
                 />
             })
@@ -101,7 +113,6 @@ export default class Map extends Component {
           return {latitude: user.location.lat, longitude: user.location.long}
         })
         centroid = Center(positions);
-        console.log(centroid)
         
         return (
           <MapView
