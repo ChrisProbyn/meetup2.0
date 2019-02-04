@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { ImageBackground, Text, StyleSheet, TouchableOpacity, } from 'react-native';
 
-class Main extends Component {
-    state = {
-      backgroundImage: require("../assets/background.png")
-  }
+export default class Main extends Component {
+  state = {
+    backgroundImage: require("../assets/background.png")
+  };
 
   static navigationOptions = {
     header: null,
-    };    
+  };
 
   onPress = () => {
-      this.props.navigation.navigate('Map');
-  }
+      this.props.navigation.navigate('Landing');
+  };
 
   render() {
     return (
@@ -24,6 +24,7 @@ class Main extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -41,4 +42,3 @@ const styles = StyleSheet.create({
       width: "90%"
   },
 });
-export default Main;

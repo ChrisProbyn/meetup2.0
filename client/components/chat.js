@@ -1,9 +1,5 @@
 import React from 'react';
-import { 
-  Text,
-  View,
-  StyleSheet
-} from 'react-native';
+import { Button, View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
 import * as firebase from 'firebase';
 import firebaseConfig from './firebase.js'
@@ -11,23 +7,42 @@ import firebaseConfig from './firebase.js'
 firebase.initializeApp(firebaseConfig);
 
 export default class Chat extends React.Component {
+  static navigationOptions = ({navigation}) => {
+    return {
+      title: 'Chat',
+      headerRight: (
+        <Button
+          onPress={() => {
+            const userID = navigation.getParam('userID');
+            navigation.navigate('Map', {userID: userID})
+          }}
+          title="Map"
+          color="orange"
+        />
+      ),
+    }
+  };
+
   constructor(props) {
     super(props)
-
     state = {
       messages: [],
     }  
-
     this.addMessage = this.addMessage.bind(this)
-    this.startMessagesListening()
-  }
+  }  
 
   componentWillMount() {
     this.setState({
       messages: [
       ],
     })
+    this.startMessagesListening()
   }
+
+  clickHandler = () => {
+    //function to handle click on floating Action Button
+    Alert.alert('Floating Button Clicked');
+  };
 
   onSend(messages = []) {
     this.setState(previousState => ({
@@ -70,6 +85,21 @@ export default class Chat extends React.Component {
             _id: props,
           }}
         />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={this.clickHandler}
+          style={styles.TouchableOpacityStyle}>
+          <Image
+            //We are making FAB using TouchableOpacity with an image
+            //We are using online image here
+//              source={{
+// uri:'http://aboutreact.com/wp-content/uploads/2018/08/bc72de57b000a7037294b53d34c2cbd1.png',
+//             }}
+            //You can use you project image Example below
+            source={require('../assets/add-icon.png')}
+            style={styles.FloatingButtonStyle}
+          />
+        </TouchableOpacity>
       </View>
     )
   }
@@ -77,5 +107,21 @@ export default class Chat extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+
+  TouchableOpacityStyle: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 15,
+    top: 30,
+  },
+ 
+  FloatingButtonStyle: {
+    resizeMode: 'contain',
+    width: 50,
+    height: 50,
   },
 });
