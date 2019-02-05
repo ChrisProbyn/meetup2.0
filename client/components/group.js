@@ -7,7 +7,17 @@ class Group extends Component {
   static navigationOptions = ({navigation}) => {
     return {
       title: 'Groups',
-      headerLeft: null,
+      gesturesEnabled: false,
+      headerLeft: (
+        <Button
+          onPress={() => {
+            // const userID = navigation.getParam('userID');
+            navigation.navigate('Home')
+          }}
+          title="Logout"
+          color="blue"
+        />
+      ),
       headerRight: (
         <Button
           onPress={() => {
@@ -33,7 +43,7 @@ class Group extends Component {
           {group.users.map((prop, key) => {
             return (
               <Text key={key} style={styles.memberImage}>
-                {prop.username}
+                {` ${prop.username}`}
               </Text>
             );
           })}
@@ -94,7 +104,7 @@ class Group extends Component {
                       <Text style={styles.groupName} >{Group.Group_name}</Text>
                     </View>
                     <Text style={styles.countMembers}>
-                      {Group.countMembers} members
+                      {Group.users.length} members
                     </Text>
                     <Text style={styles.timeAgo}>
                       Updated a few seconds ago
@@ -118,7 +128,7 @@ class Group extends Component {
 }
 const styles = StyleSheet.create({
   root: {
-    backgroundColor: "#FFFFFF"
+    backgroundColor: "#515c6d"
   },
   container: {
     padding: 16,
@@ -147,7 +157,6 @@ const styles = StyleSheet.create({
   },
   memberImage: {
     height: 30,
-    width: 30,
     marginRight:4,
     borderRadius:10,
   },
