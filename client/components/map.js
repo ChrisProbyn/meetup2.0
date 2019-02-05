@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MapView, {PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
-import { Text, Button, Alert } from 'react-native';
+import { Text, Button, Alert,TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
@@ -13,7 +13,13 @@ const resImage = require('../assets/res-icon.png')
 export default class Map extends Component {
     constructor(props){
         super(props);
-        this.state ={ havePlaces: false}
+        this.state ={ 
+            havePlaces: false,
+            default: true,
+            random: false,
+            filteredMarker: false,
+            filter: ""
+        }
     }
     static navigationOptions = () => {
         return {
@@ -34,7 +40,7 @@ export default class Map extends Component {
         return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=49.2790,-123.1187&radius=150&type=restaurant&key=${apikey}`)
           .then((response) => response.json())
           .then((responseJson) => {
-              console.log(responseJson)
+
             this.setState({
                 havePlaces: true,
                 dataSource: responseJson.results,
@@ -50,7 +56,7 @@ export default class Map extends Component {
     }
 
     renderPlacesMarker() {
-        if(this.state.havePlaces){
+        if(this.state.havePlaces&& this.state.default){
            return this.state.dataSource.map((place) => {
                 return <MapView.Marker
                 key={place.id} 
@@ -64,6 +70,49 @@ export default class Map extends Component {
             })
         }
     }
+    renderRandomMarker() {
+        
+        if(this.state.havePlaces && this.state.random){
+            let highRated =  this.state.dataSource.filter(place => place.rating > 4).map((place) => {
+                return <MapView.Marker
+                            key={place.id} 
+                            coordinate={{
+                                latitude: place.geometry.location.lat,
+                                longitude: place.geometry.location.lng}}
+                            title={place.name}
+                            image={resImage}
+                            description={`rating: ${place.rating}/5, types: ${place.types[0]}`}
+                            />
+            })
+            let randomNumber = Math.floor(Math.random()*10)
+            return highRated[randomNumber];
+        }
+    }
+    renderFilteredMarker() {
+        const filter = this.state.filter
+        if(this.state.filteredMarker && this.state.havePlaces && filter){
+            return this.state.dataSource.filter(place => place.types.includes(filter)).map((place) => {
+                return <MapView.Marker
+                            key={place.id} 
+                            coordinate={{
+                                latitude: place.geometry.location.lat,
+                                longitude: place.geometry.location.lng}}
+                            title={place.name}
+                            image={resImage}
+                            description={`rating: ${place.rating}/5, types: ${place.types[0]}`}
+                            />
+            })
+        }
+    }
+    randomClick = () => {
+        //function to handle click on floating Action Button
+        this.setState({random: true, default:false});
+      };
+    filterClick = () => {
+        //function to handle click on floating Action Button
+        this.setState({filteredMarker: true, default:false, filter: "cafe"});
+      };
+    
 
     render() {
         const query = gql`
@@ -118,6 +167,7 @@ export default class Map extends Component {
         centroid = Center(positions);
         
         return (
+            <>
           <MapView
             customMapStyle={mapStyle}
             provider={PROVIDER_GOOGLE}
@@ -149,13 +199,35 @@ export default class Map extends Component {
                 pinColor={this.randomColor()}
                 />
             ))}
-            <MapView.Marker 
+            {/* <MapView.Marker 
                 coordinate={centroid}
                 title={"center"}
                 image={flagImage}
-                />
+                /> */}
+            {this.renderFilteredMarker()}
             {this.renderPlacesMarker()}
+            {this.renderRandomMarker()}
           </MapView>
+                <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={this.randomClick}
+                style={styles.TouchableOpacityStyle1}>
+          <Image
+            source={require('../assets/add-icon.png')}
+            style={styles.FloatingButtonStyle}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={ this.filterClick}
+                style={styles.TouchableOpacityStyle2}>
+          <Image
+            source={require('../assets/add-icon.png')}
+            style={styles.FloatingButtonStyle}
+          />
+        </TouchableOpacity>
+
+        </>
           )
         }
     }
@@ -163,3 +235,32 @@ export default class Map extends Component {
       );
     }
   }
+
+
+  const styles = StyleSheet.create({
+ 
+    TouchableOpacityStyle1: {
+      position: 'absolute',
+      width: 50,
+      height: 50,
+      alignItems: 'center',
+      justifyContent: 'center',
+      right: 15,
+      top: 30,
+    },
+    TouchableOpacityStyle2: {
+        position: 'absolute',
+        width: 50,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        left: 15,
+        top: 30,
+      },
+   
+    FloatingButtonStyle: {
+      resizeMode: 'contain',
+      width: 50,
+      height: 50,
+    },
+  });

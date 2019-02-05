@@ -20,5 +20,6 @@ function Center(points) {
     }, {lat: 0, long: 0});
   };
   const center = Center(points);
-  const test ="hello"
-  console.log(`${test} world`)
+  for(let i =0; i<30; i++){
+  console.log(Math.floor(Math.random()*10))
+  }
