@@ -25,17 +25,13 @@ export default class Chat extends React.Component {
 
   constructor(props) {
     super(props)
-    state = {
+    this.state = {
       messages: [],
     }  
     this.addMessage = this.addMessage.bind(this)
   }  
 
-  componentWillMount() {
-    this.setState({
-      messages: [
-      ],
-    })
+  componentDidMount() {
     this.startMessagesListening()
   }
 
@@ -53,36 +49,49 @@ export default class Chat extends React.Component {
   }
   
   addMessage(message) {
-    const props = this.props
-    firebase.database().ref('messages/').push({
+    const userID = this.props.navigation.getParam('userID')
+    const groupID = this.props.navigation.getParam('groupID')
+    firebase.database().ref('messages/' + groupID).push({
       createdAt: new Date().getTime(),
       ...message,
       user: {
-        avatar: `https://api.adorable.io/avatars/28/${props}.jpg`,
+        avatar: `https://api.adorable.io/avatars/28/${userID}.jpg`,
         ...message.user,
       },
     });
   }
 
   startMessagesListening() {
-    firebase.database().ref('messages/').on('value', (snapshot) => {
+    const groupID = this.props.navigation.getParam('groupID')
+    firebase.database().ref('messages/' + groupID).on('value', (snapshot) => {
       const messagesObj = snapshot.val();
-      const messages = Object.keys(messagesObj).map(msgKey => messagesObj[msgKey])
-      this.setState({
-        messages: messages.reverse()
-      })
+      
+      if(!messagesObj){
+        // firebase.database().ref('messages/' + groupID).push({});
+        this.setState({
+          messages: []
+        })
+      } else{
+        const messages = Object.keys(messagesObj).map(msgKey => messagesObj[msgKey])
+        this.setState({
+          messages: messages.reverse()
+        })
+      }
     });
   }
 
+
+
   render() {
-    const props = this.props.navigation.getParam('userID')
+    const userID = this.props.navigation.getParam('userID')
+    const groupID = this.props.navigation.getParam('groupID')
     return (
       <View style={styles.container}>
         <GiftedChat
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
           user={{
-            _id: props,
+            _id: userID,
           }}
         />
         <TouchableOpacity
@@ -90,12 +99,6 @@ export default class Chat extends React.Component {
           onPress={this.clickHandler}
           style={styles.TouchableOpacityStyle}>
           <Image
-            //We are making FAB using TouchableOpacity with an image
-            //We are using online image here
-//              source={{
-// uri:'http://aboutreact.com/wp-content/uploads/2018/08/bc72de57b000a7037294b53d34c2cbd1.png',
-//             }}
-            //You can use you project image Example below
             source={require('../assets/add-icon.png')}
             style={styles.FloatingButtonStyle}
           />

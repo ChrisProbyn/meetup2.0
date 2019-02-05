@@ -33,7 +33,7 @@ class Group extends Component {
 
   onChatPress = (groupid) => {
     const userID = this.props.navigation.getParam('userID');
-    this.props.navigation.navigate('Chat', {userID: userID, groupID: groupid});
+    this.props.navigation.navigate('Chat', {userID: 6000, groupID: groupid});
   }
 
   renderGroupMembers = (group) => {
@@ -104,7 +104,7 @@ class Group extends Component {
                       <Text style={styles.groupName} >{Group.Group_name}</Text>
                     </View>
                     <Text style={styles.countMembers}>
-                      {Group.countMembers} members
+                      {Group.users.length} members
                     </Text>
                     <Text style={styles.timeAgo}>
                       Updated a few seconds ago

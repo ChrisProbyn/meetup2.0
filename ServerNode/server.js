@@ -1,14 +1,4 @@
 // server.js
-
-// const { execute, subscribe } = require('graphql');
-// const { createServer }= require('http');
-// const { SubscriptionServer } =  require('subscriptions-transport-ws');
-
-// const express = require('express');
-// const SocketServer = require('ws');
-// const uuidv4 = require('uuid/v4');
-// const PORT        = process.env.PORT || 8080;
-
 const ENV         = process.env.NODE_ENV || "development";
 const { ApolloServer, gql, PubSub, withFilter } = require('apollo-server');
 const {makeExecutableSchema} = require('graphql-tools');
@@ -17,25 +7,6 @@ const knexConfig = require('./knexfile');
 const knex = require('knex')(knexConfig[ENV]);
 
 const pubsub = new PubSub();
-
-const convertMessageToGiftedChatFormat = (messages) => {
-  let newArray = []
-  for(let message of messages){
-    if(message.user_id){ 
-     newArray.push( {
-       _id: message.id,
-       user: {
-         _id: message.user_id,
-         name: message.username
-       },
-       text: message.text,
-       createdAt: message.created_at
-     })
-   }
- }
-   return newArray
-   
- }
 
 const typeDefs = gql`
   # Comments in GraphQL are defined with the hash (#) symbol.
@@ -254,7 +225,6 @@ const resolvers = {
 };
 
 // const server = new ApolloServer({ typeDefs, resolvers });
-
 const schema = makeExecutableSchema({typeDefs, resolvers});
 const server = new ApolloServer({
   schema,
@@ -274,67 +244,3 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
   console.log(`🚀  Server ready at ${url} 🚀`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Create a new express server
-// const server = express()
-//    // Make the express server serve static assets (html, javascript, css) from the /public folder
-//   .use(express.static('public'))
-//   .listen(PORT, '0.0.0.0', 'localhost', () => console.log(`Listening on ${ PORT }`));
-
-// // Create the WebSockets server
-// const wss = new SocketServer.Server({ server });
-
-// // Set up a callback that will run when a client connects to the server
-// // When a client connects they are assigned a socket, represented by
-// // the ws parameter in the callback.
-// wss.broadcast = function(data) {
-//   const numOfClients = wss.clients.size;
-
-//   wss.clients.forEach(sock => {
-//     console.log("got message")
-//     if (sock.readyState === SocketServer.OPEN) {
-//       const parsedData = JSON.parse(data);
-//       const returnData = Object.assign({id:uuidv4(), clientNumber:numOfClients},parsedData);
-      
-//       sock.send(JSON.stringify(returnData));
-//     } else {
-//       sock.terminate();
-//     }
-//   });
-// }
-
-
-// wss.on('connection', (socket, req) => {
-  
-//   const clientConnection ={numOfClients: wss.clients.size, Type:"incomingClient", id:uuidv4()};
-//   socket.send(JSON.stringify(clientConnection));
-//   wss.broadcast(JSON.stringify(clientConnection));
-
-  
-//   socket.on('message', wss.broadcast);
-//   socket.on('close', () => {
-//     console.log('Client disconnected')
-//     const clientConnection ={numOfClients: wss.clients.size, Type:"incomingClient", id:uuidv4()};
-//     wss.broadcast(JSON.stringify(clientConnection));
-//   });
-// });
