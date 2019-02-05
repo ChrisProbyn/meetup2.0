@@ -142,7 +142,7 @@ export default class Map extends Component {
             strokeWidth={6}
         />
 
-            {data.group.users.map(marker => (
+            {data.group.users.filter(user => user.location.lat != 49.281372).map(marker => (
                 <MapView.Marker 
                 coordinate={{
                     latitude: marker.location.lat,
