@@ -8,7 +8,7 @@ import gql from "graphql-tag";
 import ApolloClient from "apollo-boost"
 
 const apolloClient = new ApolloClient({
-  uri: "http://192.168.88.68:4000/graphql"
+  uri: "http://192.168.88.70:4000/graphql"
  });
 
 
@@ -77,7 +77,6 @@ export default class Chat extends React.Component {
       const messagesObj = snapshot.val();
       
       if(!messagesObj){
-        // firebase.database().ref('messages/' + groupID).push({});
         this.setState({
           messages: []
         })
@@ -89,15 +88,14 @@ export default class Chat extends React.Component {
       }
     });
   }
-  validateEmail(email){
+
+  validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
-    };
-
-
+  };
 
   render() {
-    
+    const userID = this.props.navigation.getParam('userID')
     const groupID = this.props.navigation.getParam('groupID');
     const query = gql`
     {
@@ -124,9 +122,7 @@ export default class Chat extends React.Component {
             emailNotInGroup = false;
             Alert.alert(
               'user is allready in group',
-              'idiot',
               [
-                
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ],
               {cancelable: false},
@@ -160,15 +156,12 @@ export default class Chat extends React.Component {
           'email is not valid',
           'email is not valid',
           [
-            
             {text: 'OK', onPress: () => console.log('OK Pressed')},
           ],
           {cancelable: false},
         )
       }
     }
-    const props = this.props.navigation.getParam('userID')
-    const userID = this.props.navigation.getParam('userID')
 
     return (
       <View style={styles.container}>
@@ -179,7 +172,7 @@ export default class Chat extends React.Component {
             _id: userID,
           }}
         />
-      <Query query={query} pollInterval={50}>
+      <Query query={query}>
       {({loading, error, data}) => {
         if(loading) return <Text>Loading Container...</Text>;
         if(error) return <Text>Group Component ERROR! {error}</Text>;
