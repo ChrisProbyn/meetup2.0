@@ -6,3 +6,4 @@ npm-debug.*
 *.key
 *.mobileprovision
 components/firebase.js
+components/apikey.js
