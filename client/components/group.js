@@ -6,6 +6,8 @@ import gql from "graphql-tag";
 class Group extends Component {
   static navigationOptions = ({navigation}) => {
     return {
+      headerStyle: {backgroundColor: "#212121"},
+      headerTintColor: 'white',
       title: 'Groups',
       gesturesEnabled: false,
       headerLeft: (
@@ -15,7 +17,7 @@ class Group extends Component {
             navigation.navigate('Home')
           }}
           title="Logout"
-          color="blue"
+          color="#8080ff"
         />
       ),
       headerRight: (
@@ -128,7 +130,7 @@ class Group extends Component {
 }
 const styles = StyleSheet.create({
   root: {
-    backgroundColor: "#515c6d"
+    backgroundColor: "#212121"
   },
   container: {
     padding: 16,
@@ -159,6 +161,7 @@ const styles = StyleSheet.create({
     height: 30,
     marginRight:4,
     borderRadius:10,
+    color: '#85e0e0'
   },
   separator: {
     height: 1,
@@ -169,11 +172,11 @@ const styles = StyleSheet.create({
   },
   timeAgo:{
     fontSize:12,
-    color:"#696969"
+    color:"#a3a3c2"
   },
   groupName:{
     fontSize:23,
-    color:"#1E90FF"
+    color:"white"
   },
   groupMembersContent:{
     flexDirection:'row',

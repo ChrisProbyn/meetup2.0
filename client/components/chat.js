@@ -3,7 +3,7 @@ import { Button, View, StyleSheet,Text, Image, TouchableOpacity, Alert, Modal , 
 import { GiftedChat } from 'react-native-gifted-chat'
 import * as firebase from 'firebase';
 import firebaseConfig from './firebase.js'
-import { Query, Mutation } from "react-apollo";
+import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import ApolloClient from "apollo-boost"
 
@@ -11,12 +11,16 @@ const apolloClient = new ApolloClient({
   uri: "http://192.168.88.70:4000/graphql"
  });
 
-
 firebase.initializeApp(firebaseConfig);
 
 export default class Chat extends React.Component {
   static navigationOptions = ({navigation}) => {
     return {
+      headerStyle: {backgroundColor: "#29293d"},
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
       title: 'Chat',
       headerRight: (
         <Button
@@ -193,7 +197,13 @@ export default class Chat extends React.Component {
               />
               <TouchableOpacity >
                 <Button title="Add"
+                  color='#ffd700'
                   onPress={() => addNewUser(data)}/>
+              </TouchableOpacity>
+              <TouchableOpacity >
+                <Button title="Dismiss"
+                  color='#ffd700'
+                  onPress={() => this.setState({modalVisible: false})}/>
               </TouchableOpacity>
             </View>
 
@@ -222,7 +232,7 @@ const styles = StyleSheet.create({
   },
   Modalcontainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#3d3d5c',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -239,6 +249,7 @@ const styles = StyleSheet.create({
     marginTop: offset,
     marginLeft: offset,
     fontSize: offset,
+    color: 'white'
   },
   TouchableOpacityStyle: {
     position: 'absolute',

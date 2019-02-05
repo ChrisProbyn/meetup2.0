@@ -6,7 +6,6 @@ import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
 import apikey from "./apikey.js"
 
-
 const flagImage = require('../assets/flag-icon.png')
 const resImage = require('../assets/res-icon.png')
 
@@ -17,6 +16,11 @@ export default class Map extends Component {
     }
     static navigationOptions = () => {
         return {
+            headerStyle: {backgroundColor: "#29293d"},
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
             title: 'Map',
             headerRight: (
             <Button
@@ -24,7 +28,7 @@ export default class Map extends Component {
                 Alert.alert('Poll Button Clicked');
                 }}
                 title="Poll"
-                color="green"
+                color="gold"
             />
             ),
         }

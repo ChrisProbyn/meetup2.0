@@ -35,10 +35,10 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   text: {
-      textAlign: 'center',
-      fontSize: 45,
-      color: 'white',
-      marginBottom: 30,
-      width: "90%"
+    textAlign: 'center',
+    fontSize: 45,
+    color: 'white',
+    marginBottom: 30,
+    width: "90%"
   },
 });
