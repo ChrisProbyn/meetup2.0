@@ -5,6 +5,7 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
 import apikey from "./apikey.js"
+import { Accelerometer } from 'expo';
 
 
 const flagImage = require('../assets/flag-icon.png')
@@ -18,7 +19,10 @@ export default class Map extends Component {
             default: true,
             random: false,
             filteredMarker: false,
-            filter: ""
+            filter: "",
+            accelerometerData: {},
+            tilt: false,
+      
         }
     }
     static navigationOptions = () => {
