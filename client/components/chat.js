@@ -41,11 +41,7 @@ export default class Chat extends React.Component {
     this.addMessage = this.addMessage.bind(this)
   }  
 
-  componentWillMount() {
-    this.setState({
-      messages: [
-      ],
-    })
+  componentDidMount() {
     this.startMessagesListening()
   }
   onChangeText = userEmail => this.setState({ userEmail }); 
@@ -64,29 +60,41 @@ export default class Chat extends React.Component {
   }
   
   addMessage(message) {
-    const props = this.props
-    firebase.database().ref('messages/').push({
+    const userID = this.props.navigation.getParam('userID')
+    const groupID = this.props.navigation.getParam('groupID')
+    firebase.database().ref('messages/' + groupID).push({
       createdAt: new Date().getTime(),
       ...message,
       user: {
-        avatar: `https://api.adorable.io/avatars/28/${props}.jpg`,
+        avatar: `https://api.adorable.io/avatars/28/${userID}.jpg`,
         ...message.user,
       },
     });
   }
   startMessagesListening() {
-    firebase.database().ref('messages/').on('value', (snapshot) => {
+    const groupID = this.props.navigation.getParam('groupID')
+    firebase.database().ref('messages/' + groupID).on('value', (snapshot) => {
       const messagesObj = snapshot.val();
-      const messages = Object.keys(messagesObj).map(msgKey => messagesObj[msgKey])
-      this.setState({
-        messages: messages.reverse()
-      })
+      
+      if(!messagesObj){
+        // firebase.database().ref('messages/' + groupID).push({});
+        this.setState({
+          messages: []
+        })
+      } else{
+        const messages = Object.keys(messagesObj).map(msgKey => messagesObj[msgKey])
+        this.setState({
+          messages: messages.reverse()
+        })
+      }
     });
   }
   validateEmail(email){
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
     };
+
+
 
   render() {
     
@@ -160,13 +168,15 @@ export default class Chat extends React.Component {
       }
     }
     const props = this.props.navigation.getParam('userID')
+    const userID = this.props.navigation.getParam('userID')
+
     return (
       <View style={styles.container}>
         <GiftedChat
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
           user={{
-            _id: props,
+            _id: userID,
           }}
         />
       <Query query={query} pollInterval={50}>
