@@ -37,7 +37,7 @@ export default mapStyle = [
       "elementType": "labels",
       "stylers": [
         {
-          "color": "#ffb316"
+          "color": "#c"
         },
         {
           "weight": 0.5

@@ -179,7 +179,7 @@ export default class Chat extends React.Component {
             _id: userID,
           }}
         />
-      <Query query={query} pollInterval={50}>
+      <Query query={query} >
       {({loading, error, data}) => {
         if(loading) return <Text>Loading Container...</Text>;
         if(error) return <Text>Group Component ERROR! {error}</Text>;
