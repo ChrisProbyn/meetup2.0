@@ -28,12 +28,23 @@ const User = t.struct({
     },
     textbox: {
       normal: {
-        color: "white",
+      color: "white",
         fontSize: 15,
       height: 36,
       paddingHorizontal: 7,
       borderRadius: 4,
       borderColor: "white",
+      borderWidth: 1,
+      marginBottom: 5,
+      fontWeight: '600'
+      },
+      error: {
+        color: "white",
+        fontSize: 15,
+      height: 36,
+      paddingHorizontal: 7,
+      borderRadius: 4,
+      borderColor: "red",
       borderWidth: 1,
       marginBottom: 5,
       fontWeight: '600'

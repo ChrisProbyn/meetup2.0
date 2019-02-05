@@ -42,7 +42,7 @@ export default class Map extends Component {
 
     componentDidMount(){
         
-        return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=49.2790,-123.1187&radius=150&type=$restaurant&key=${apikey}`)
+        return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=49.2790,-123.1187&radius=150&type=restaurant&key=${apikey}`)
           .then((response) => response.json())
           .then((responseJson) => {
 
@@ -170,7 +170,7 @@ export default class Map extends Component {
           return {latitude: user.location.lat, longitude: user.location.long}
         })
         centroid = Center(positions);
-        
+        console.log(centroid)
         return (
             <>
           <MapView
