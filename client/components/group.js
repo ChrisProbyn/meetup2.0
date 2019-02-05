@@ -128,7 +128,7 @@ class Group extends Component {
 }
 const styles = StyleSheet.create({
   root: {
-    backgroundColor: "#FFFFFF"
+    backgroundColor: "#515c6d"
   },
   container: {
     padding: 16,

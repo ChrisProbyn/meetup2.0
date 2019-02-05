@@ -1,8 +1,16 @@
 import React from 'react';
-import { Button, View, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { Button, View, StyleSheet,Text, Image, TouchableOpacity, Alert, Modal , TextInput} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
 import * as firebase from 'firebase';
 import firebaseConfig from './firebase.js'
+import { Query, Mutation } from "react-apollo";
+import gql from "graphql-tag";
+import ApolloClient from "apollo-boost"
+
+const apolloClient = new ApolloClient({
+  uri: "http://192.168.88.68:4000/graphql"
+ });
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -25,8 +33,10 @@ export default class Chat extends React.Component {
 
   constructor(props) {
     super(props)
-    state = {
+    this.state = {
       messages: [],
+      modalVisible: false,
+      userEmail: ""
     }  
     this.addMessage = this.addMessage.bind(this)
   }  
@@ -38,10 +48,11 @@ export default class Chat extends React.Component {
     })
     this.startMessagesListening()
   }
+  onChangeText = userEmail => this.setState({ userEmail }); 
 
   clickHandler = () => {
     //function to handle click on floating Action Button
-    Alert.alert('Floating Button Clicked');
+    this.setState({modalVisible: true});
   };
 
   onSend(messages = []) {
@@ -63,7 +74,6 @@ export default class Chat extends React.Component {
       },
     });
   }
-
   startMessagesListening() {
     firebase.database().ref('messages/').on('value', (snapshot) => {
       const messagesObj = snapshot.val();
@@ -73,8 +83,82 @@ export default class Chat extends React.Component {
       })
     });
   }
+  validateEmail(email){
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+    };
 
   render() {
+    
+    const groupID = this.props.navigation.getParam('groupID');
+    const query = gql`
+    {
+      users{
+        id
+        email
+      }
+      group(id: ${groupID}){
+        users{
+          email
+        }
+      }
+     }`
+     
+    addNewUser = (data) => {
+      const allUsers = data.users;
+      const usersInGroup = data.group.users;
+      const email = this.state.userEmail;
+      let emailNotInGroup = true;
+      let emailInDB = false;
+      if(this.validateEmail(email)){
+        for(let user of usersInGroup){
+          if(user.email === email){
+            emailNotInGroup = false;
+            Alert.alert(
+              'user is allready in group',
+              'idiot',
+              [
+                
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ],
+              {cancelable: false},
+            )
+          }
+        }
+        for(let user of allUsers) {
+          if(user.email === email){
+            emailInDB = true;
+          }
+        }
+        if(emailInDB && emailNotInGroup){
+          apolloClient.mutate({
+            variables: { groupID: groupID, email: email},
+            mutation: gql`
+              mutation addUserToGroup($groupID: ID, $email: String) {
+                addUserToGroup(groupID: $groupID, email: $email) {
+                  id
+                  group_id
+                  user_id
+                } 
+              }
+            `,
+          })
+          .then(result => {this.setState({modalVisible:false})})
+          .catch(error => { console.log(error) });
+          this.setState({modalVisible:false})
+          }
+      } else{
+        Alert.alert(
+          'email is not valid',
+          'email is not valid',
+          [
+            
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          {cancelable: false},
+        )
+      }
+    }
     const props = this.props.navigation.getParam('userID')
     return (
       <View style={styles.container}>
@@ -85,30 +169,74 @@ export default class Chat extends React.Component {
             _id: props,
           }}
         />
+      <Query query={query} pollInterval={50}>
+      {({loading, error, data}) => {
+        if(loading) return <Text>Loading Container...</Text>;
+        if(error) return <Text>Group Component ERROR! {error}</Text>;
+        return (
+         <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          presentationStyle={"overFullScreen"}
+          >
+          
+            <View style={styles.Modalcontainer}>
+              <Text style={styles.title}>Add your friends email:</Text>
+              <TextInput
+                onChangeText={this.onChangeText}
+                style={styles.nameInput}
+                placeHolder="User"
+              />
+              <TouchableOpacity >
+                <Button title="Add"
+                  onPress={() => addNewUser(data)}/>
+              </TouchableOpacity>
+            </View>
+
+        </Modal>
+        )}}
+        </Query>
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={this.clickHandler}
           style={styles.TouchableOpacityStyle}>
           <Image
-            //We are making FAB using TouchableOpacity with an image
-            //We are using online image here
-//              source={{
-// uri:'http://aboutreact.com/wp-content/uploads/2018/08/bc72de57b000a7037294b53d34c2cbd1.png',
-//             }}
-            //You can use you project image Example below
             source={require('../assets/add-icon.png')}
             style={styles.FloatingButtonStyle}
           />
         </TouchableOpacity>
+       
       </View>
     )
   }
 }
+const offset = 24;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#242f3e"
   },
-
+  Modalcontainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  nameInput: {
+    backgroundColor: 'white',
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 10,
+    height: 35,
+    minWidth: '80%',
+    bottom: 0,
+  },
+  title: {
+    marginTop: offset,
+    marginLeft: offset,
+    fontSize: offset,
+  },
   TouchableOpacityStyle: {
     position: 'absolute',
     width: 50,
