@@ -1,13 +1,78 @@
 import React, {Component} from 'react';
 import MapView, {PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
-import { Text, Button, Alert,TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { Text, Button, TouchableOpacity, StyleSheet, Image, Modal, View} from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import mapStyle from "./mapstyle.js";
-import apikey from "./apikey.js";
+import mapStyle from "./mapstyle.js"
+import apikey from "./apikey.js"
+import t from 'tcomb-form-native';
+
 
 // const flagImage = require('../assets/flag-icon.png')
 const resImage = require('../assets/res-icon.png')
+const Form = t.form.Form;
+const filter = t.struct({
+  FoodOrNightlife: t.Boolean
+});
+  
+  const formStyles = {
+    ...Form.stylesheet,
+    formGroup: {
+      normal: {
+        marginBottom: 10,
+        color: 'white'
+      },
+    },
+    textbox: {
+      normal: {
+      color: "white",
+        fontSize: 15,
+      height: 36,
+      paddingHorizontal: 7,
+      borderRadius: 4,
+      borderColor: "white",
+      borderWidth: 1,
+      marginBottom: 5,
+      fontWeight: '600'
+      },
+      error: {
+        color: "white",
+        fontSize: 15,
+      height: 36,
+      paddingHorizontal: 7,
+      borderRadius: 4,
+      borderColor: "red",
+      borderWidth: 1,
+      marginBottom: 5,
+      fontWeight: '600'
+      }
+    },
+    controlLabel: {
+      normal: {
+        color: 'white',
+        fontSize: 18,
+        marginBottom: 7,
+        fontWeight: '600'
+      },
+      // the style applied when a validation error occours
+      error: {
+        color: 'red',
+        fontSize: 18,
+        marginBottom: 7,
+        fontWeight: '600'
+      },
+    }
+  }
+  
+  const options = {
+    fields: {
+   
+      FoodOrNightlife: {
+      
+      },
+    },
+    stylesheet: formStyles,
+  };
 
 export default class Map extends Component {
     constructor(props){
@@ -17,13 +82,13 @@ export default class Map extends Component {
             default: true,
             random: false,
             filteredMarker: false,
-            filter: "",
+            keyword: "",
+            type: "restaurant",
             centroid: {latitude: 0, longitude: 0},
-            type:"restaurant",
-            keyword: ""
+            modalVisible: false
         }
     }
-    static navigationOptions = () => {
+    static navigationOptions = ({navigation}) => {
         return {
             headerStyle: {backgroundColor: "#29293d"},
             headerTintColor: '#fff',
@@ -33,9 +98,7 @@ export default class Map extends Component {
             title: 'Map',
             headerRight: (
             <Button
-                onPress={() => {
-                Alert.alert('Poll Button Clicked');
-                }}
+                onPress={navigation.getParam('renderFilter')}
                 title="Filter"
                 color="gold"
             />
@@ -43,8 +106,16 @@ export default class Map extends Component {
         }
     };
 
+    componentDidMount() {
+        this.props.navigation.setParams({ renderFilter: this._renderfilter });
+    }
+
     randomColor() {
         return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+    }
+
+    _renderfilter = () => {
+        this.setState({modalVisible: true});
     }
 
     renderPlacesMarker() {
@@ -99,16 +170,11 @@ export default class Map extends Component {
     }
 
     randomClick = () => {
-        //function to handle click on floating Action Button
         this.setState({random: true, default:false});
     };
 
-    // filterClick = () => {
-    //     //function to handle click on floating Action Button
-    //     this.setState({filteredMarker: true, default:false, filter: "cafe"});
-    // };
-
-    centerClick = (center, type, keyword) => {
+    centerClick = (center, type) => {
+        if(!type){
         return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=150&type=restaurant&key=${apikey}`)
             .then((response) => response.json())
             .then((responseJson) => {
@@ -122,12 +188,32 @@ export default class Map extends Component {
             .catch((error) =>{
             console.error(error);
             });
+        } else {
+            console.log(type)
+             return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=300&type=night_club&key=${apikey}`)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson)
+            this.setState({
+                havePlaces: true,
+                random: false,
+                default: true,
+                modalVisible: false,
+                dataSource: responseJson.results,
+                });
+
+            })
+            .catch((error) =>{
+            console.error(error);
+            });
+        }
     };
     
     render() {
+        const groupID = this.props.navigation.getParam('groupID');
         const query = gql`
         {
-            group(id:3000){
+            group(id: ${groupID}){
                 Group_name
                 users {
                   id
@@ -234,6 +320,32 @@ export default class Map extends Component {
             style={styles.FloatingButtonStyle}
           />
         </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          presentationStyle={"overFullScreen"}
+          >
+          
+            <View style={styles.Modalcontainer}>
+            <Form 
+                ref={c => this._form = c}
+                type={filter} 
+                options={options}
+                style={{color: 'white'}}
+            />
+              <TouchableOpacity >
+                <Button title="Refine"
+                  onPress={() => this.centerClick(centroid,this._form.getValue().FoodOrNightlife)}/>
+              </TouchableOpacity>
+              <TouchableOpacity >
+                <Button title="Dismiss"
+                  color='#ffd700'
+                  onPress={() => this.setState({modalVisible: false})}/>
+              </TouchableOpacity>
+            </View>
+
+        </Modal>
 
         </>
           )
@@ -244,7 +356,7 @@ export default class Map extends Component {
     }
   }
 
-
+  
   const styles = StyleSheet.create({
  
     TouchableOpacityStyle1: {
@@ -256,6 +368,13 @@ export default class Map extends Component {
       right: 15,
       top: 30,
     },
+    Modalcontainer: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: "#3d3d5c"
+      },
     TouchableOpacityStyle2: {
         position: 'absolute',
         width: 50,

@@ -167,6 +167,8 @@ export default class Chat extends React.Component {
       }
     }
 
+ 
+
     return (
       <View style={styles.container}>
         <GiftedChat
