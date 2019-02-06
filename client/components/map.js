@@ -313,7 +313,7 @@ export default class Map extends Component {
         </TouchableOpacity>
         <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => this.centerClick(centroid, this.state.type, this.state.keyword)}
+                onPress={() => this.centerClick(centroid)}
                 style={styles.TouchableOpacityStyle2}>
           <Image
             source={require('../assets/flag-icon.png')}

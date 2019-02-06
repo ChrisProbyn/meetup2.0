@@ -3,6 +3,12 @@ import { Platform, StyleSheet, View, FlatList, Button, Text, TouchableOpacity } 
 import { Constants, Location, Permissions } from 'expo';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
+import ApolloClient from "apollo-boost"
+
+// Set Apollo IP Address
+const apolloClient = new ApolloClient({
+  uri: "http://192.168.88.70:4000/graphql"
+ });
 
 export default class Group extends Component {
   state = {
@@ -66,6 +72,24 @@ export default class Group extends Component {
     this.props.navigation.navigate('Chat', {userID: userID, groupID: groupid});
   }
 
+  haveUserLocation = () => {
+    const userID = this.props.navigation.getParam('userID');
+    if(this.state.location){
+      apolloClient.mutate({
+        variables: { userID: userID, lat: this.state.location.coords.latitude, long: this.state.location.coords.longitude},
+        mutation: gql`
+          mutation changeUserLocation($userID: ID, $lat: Float, $long: Float) {
+          changeUserLocation(userID: $userID, lat: $lat, long: $long) {
+            id
+          } 
+        }
+        `
+      })
+      .then(result => {console.log(result)})
+      .catch(error => { console.log(error) });
+    }
+  }
+
   renderGroupMembers = (group) => {
     if(group.users) {
       return (
@@ -103,7 +127,7 @@ export default class Group extends Component {
       text = this.state.errorMessage;
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
-      console.log(this.state.location)
+      this.haveUserLocation();
     }
 
     return (

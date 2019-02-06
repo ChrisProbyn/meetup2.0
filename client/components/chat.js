@@ -8,7 +8,7 @@ import gql from "graphql-tag";
 import ApolloClient from "apollo-boost"
 
 const apolloClient = new ApolloClient({
-  uri: "http://192.168.88.68:4000/graphql"
+  uri: "http://192.168.88.70:4000/graphql"
 });
 
 firebase.initializeApp(firebaseConfig);
@@ -26,7 +26,8 @@ export default class Chat extends React.Component {
         <Button
           onPress={() => {
             const userID = navigation.getParam('userID');
-            navigation.navigate('Map', {userID: userID});
+            const groupID = navigation.getParam('groupID')
+            navigation.navigate('Map', {userID: userID, groupID: groupID});
           }}
           title="Map"
           color="orange"

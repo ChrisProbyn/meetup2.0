@@ -11,7 +11,7 @@ export default class Main extends Component {
   };
 
   onPress = () => {
-      this.props.navigation.navigate('Group', {userID: 6000, groupID: 3000});
+      this.props.navigation.navigate('Landing');
   };
 
   render() {
