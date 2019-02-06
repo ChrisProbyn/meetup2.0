@@ -5,14 +5,74 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
 import apikey from "./apikey.js"
+import t from 'tcomb-form-native';
 
-// import { Accelerometer } from 'expo';
 
 // const flagImage = require('../assets/flag-icon.png')
 const resImage = require('../assets/res-icon.png')
-
-
-
+const Form = t.form.Form;
+const filter = t.struct({
+  FoodOrNightlife: t.Boolean
+});
+  
+  const formStyles = {
+    ...Form.stylesheet,
+    formGroup: {
+      normal: {
+        marginBottom: 10,
+        color: 'white'
+      },
+    },
+    textbox: {
+      normal: {
+      color: "white",
+        fontSize: 15,
+      height: 36,
+      paddingHorizontal: 7,
+      borderRadius: 4,
+      borderColor: "white",
+      borderWidth: 1,
+      marginBottom: 5,
+      fontWeight: '600'
+      },
+      error: {
+        color: "white",
+        fontSize: 15,
+      height: 36,
+      paddingHorizontal: 7,
+      borderRadius: 4,
+      borderColor: "red",
+      borderWidth: 1,
+      marginBottom: 5,
+      fontWeight: '600'
+      }
+    },
+    controlLabel: {
+      normal: {
+        color: 'white',
+        fontSize: 18,
+        marginBottom: 7,
+        fontWeight: '600'
+      },
+      // the style applied when a validation error occours
+      error: {
+        color: 'red',
+        fontSize: 18,
+        marginBottom: 7,
+        fontWeight: '600'
+      },
+    }
+  }
+  
+  const options = {
+    fields: {
+   
+      FoodOrNightlife: {
+      
+      },
+    },
+    stylesheet: formStyles,
+  };
 
 export default class Map extends Component {
     constructor(props){
@@ -45,20 +105,6 @@ export default class Map extends Component {
             ),
         }
     };
-
-    // componentDidMount(){
-    //     return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=49.2790,-123.1187&radius=150&type=restaurant&key=${apikey}`)
-    //       .then((response) => response.json())
-    //       .then((responseJson) => {
-    //         this.setState({
-    //             havePlaces: true,
-    //             dataSource: responseJson.results,
-    //           });
-    //       })
-    //       .catch((error) =>{
-    //         console.error(error);
-    //       });
-    // }
 
     randomColor() {
         return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
@@ -128,9 +174,9 @@ export default class Map extends Component {
     //     this.setState({filteredMarker: true, default:false, filter: "cafe"});
     // };
 
-    centerClick = (center, type, keyword) => {
+    centerClick = (center, type) => {
         if(!type){
-        return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=150&type=${this.state.type}&key=${apikey}`)
+        return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=150&type=restaurant&key=${apikey}`)
             .then((response) => response.json())
             .then((responseJson) => {
             this.setState({
@@ -143,10 +189,24 @@ export default class Map extends Component {
             .catch((error) =>{
             console.error(error);
             });
-        } else if(type && keyword){
-            //render nightlife with keyword
-        } else if(!type && keyword){
-            console.log("hello")
+        } else {
+            console.log(type)
+             return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=300&type=night_club&key=${apikey}`)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson)
+            this.setState({
+                havePlaces: true,
+                random: false,
+                default: true,
+                modalVisible: false,
+                dataSource: responseJson.results,
+                });
+
+            })
+            .catch((error) =>{
+            console.error(error);
+            });
         }
     };
     
@@ -268,10 +328,15 @@ export default class Map extends Component {
           >
           
             <View style={styles.Modalcontainer}>
-          
+            <Form 
+                ref={c => this._form = c}
+                type={filter} 
+                options={options}
+                style={{color: 'white'}}
+            />
               <TouchableOpacity >
                 <Button title="Refine"
-                  onPress={() => this.centerClick(centroid,,)}/>
+                  onPress={() => this.centerClick(centroid,this._form.getValue().FoodOrNightlife)}/>
               </TouchableOpacity>
               <TouchableOpacity >
                 <Button title="Dismiss"
