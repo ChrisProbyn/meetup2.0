@@ -220,7 +220,8 @@ const resolvers = {
           return knex("members").returning("*").insert({group_id: groupID, user_id: userID})
       
         }).then((user) => user[0])
-    }
+    },
+    updateUserLocation:
   },
   Subscription: {
     messageAdded: {

@@ -211,9 +211,10 @@ export default class Map extends Component {
     };
     
     render() {
+        const groupID = this.props.navigation.getParam('groupID');
         const query = gql`
         {
-            group(id:3000){
+            group(id:${groupID}){
                 Group_name
                 users {
                   id
