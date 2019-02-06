@@ -167,7 +167,7 @@ export default class Chat extends React.Component {
         )
       }
     }
-    const props = this.props.navigation.getParam('userID')
+
     const userID = this.props.navigation.getParam('userID')
 
     return (

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MapView, {PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
-import { Text, Button, Alert,TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { Text, Button, Alert,TouchableOpacity, StyleSheet, Image, Modal, View, TextInput} from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
@@ -22,6 +22,7 @@ export default class Map extends Component {
             filter: "",
             accelerometerData: {},
             tilt: false,
+            modalVisible:false,
       
         }
     }
@@ -118,7 +119,10 @@ export default class Map extends Component {
         this.setState({filteredMarker: true, default:false, filter: "cafe"});
       };
     
-
+      clickHandler = () => {
+        //function to handle click on floating Action Button
+        this.setState({modalVisible: true});
+      };
     render() {
         const query = gql`
         {
@@ -224,13 +228,34 @@ export default class Map extends Component {
         </TouchableOpacity>
         <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={ this.filterClick}
+                onPress={ this.clickHandler}
                 style={styles.TouchableOpacityStyle2}>
           <Image
             source={require('../assets/add-icon.png')}
             style={styles.FloatingButtonStyle}
           />
         </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          presentationStyle={"overFullScreen"}
+          >
+          
+            <View style={styles.Modalcontainer}>
+              <Text style={styles.title}>Add your friends email:</Text>
+              <TextInput
+                onChangeText={this.onChangeText}
+                style={styles.nameInput}
+                placeHolder="User"
+              />
+              <TouchableOpacity >
+                <Button title="Add"
+                  onPress={() => addNewUser(data)}/>
+              </TouchableOpacity>
+            </View>
+
+        </Modal>
 
         </>
           )
@@ -253,6 +278,12 @@ export default class Map extends Component {
       right: 15,
       top: 30,
     },
+    Modalcontainer: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
     TouchableOpacityStyle2: {
         position: 'absolute',
         width: 50,
