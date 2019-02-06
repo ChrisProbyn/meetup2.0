@@ -88,15 +88,12 @@ const typeDefs = gql`
 
   type Mutation {
     createMessage(userID: Int!, Group_name: String!, text: String!): Message
-    #changeUserLocation(username: String, lat: Float, long: Float): User
+    changeUserLocation(userID: ID, lat: Float, long: Float): User
     createGroup(Group_name: String, userID: ID): Member
     createUser(email: String, username: String, password: String): User
     addUserToGroup(groupID: ID, email:String): Member
     #deleteGroup(GroupName: String): Group
-    #createPlace()
-    #changeUserResterauntPreference():
-    #changeUserNightlifePreference():
-    #changeUsername()
+
   }
   
   type Subscription {
@@ -221,7 +218,13 @@ const resolvers = {
       
         }).then((user) => user[0])
     },
-    updateUserLocation:
+    changeUserLocation: (root, {userID, lat, long}, context, info) => {
+      
+      return knex('locations').returning("*").insert({lat: lat, long: long}).then((user) => {
+        let location_id = user[0].id
+        return knex('users').update({location_id}).where('users.id', userID).returning('*').then(user => user[0])
+      })
+    }
   },
   Subscription: {
     messageAdded: {

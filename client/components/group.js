@@ -3,7 +3,7 @@ import { View, FlatList, Button, Text, StyleSheet, TouchableOpacity } from 'reac
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
-class Group extends Component {
+export default class Group extends Component {
   static navigationOptions = ({navigation}) => {
     return {
       headerStyle: {backgroundColor: "#212121"},
@@ -13,8 +13,7 @@ class Group extends Component {
       headerLeft: (
         <Button
           onPress={() => {
-            // const userID = navigation.getParam('userID');
-            navigation.navigate('Home')
+            navigation.navigate('Home');
           }}
           title="Logout"
           color="#8080ff"
@@ -24,7 +23,7 @@ class Group extends Component {
         <Button
           onPress={() => {
             const userID = navigation.getParam('userID');
-            navigation.navigate('CreateGroup', {userID: userID})
+            navigation.navigate('CreateGroup', {userID: userID});
           }}
           title="create group"
           color="orange"
@@ -45,7 +44,7 @@ class Group extends Component {
           {group.users.map((prop, key) => {
             return (
               <Text key={key} style={styles.memberImage}>
-                {` ${prop.username}`}
+                {`${prop.username}`}
               </Text>
             );
           })}
@@ -68,15 +67,15 @@ class Group extends Component {
             username
           }
         }
-     
       }
-     }`
+    }`
 
     return (
       <Query query={query} pollInterval={50}>
       {({loading, error, data}) => {
         if(loading) return <Text>Loading Container...</Text>;
         if(error) return <Text>Group Component ERROR! {error}</Text>;
+
         return (
           <FlatList
           style={styles.root}
@@ -87,38 +86,40 @@ class Group extends Component {
               <View style={styles.separator}/>
             )
           }}
+
           keyExtractor={(item)=>{
             return item.Group_name;
           }}
+
           renderItem={(item) => {
             const Group = item.item;
             let mainContentStyle;
+
             if(Group.attachment) {
               mainContentStyle = styles.mainContent;
             }
             if(Group.id) {
-            return(
-              <TouchableOpacity onPress={() => {this.onChatPress(Group.id)}}>
-              <View style={styles.container} >
-                <View style={styles.content}>
-                  <View style={mainContentStyle}>
-                    <View style={styles.text}>
-                      <Text style={styles.groupName} >{Group.Group_name}</Text>
+              return(
+                <TouchableOpacity onPress={() => {this.onChatPress(Group.id)}}>
+                <View style={styles.container} >
+                  <View style={styles.content}>
+                    <View style={mainContentStyle}>
+                      <View style={styles.text}>
+                        <Text style={styles.groupName} >{Group.Group_name}</Text>
+                      </View>
+                      <Text style={styles.countMembers}>
+                        {Group.users.length} members
+                      </Text>
+                      <Text style={styles.timeAgo}>
+                        Updated a few seconds ago
+                      </Text>
+                      {this.renderGroupMembers(Group)}
                     </View>
-                    <Text style={styles.countMembers}>
-                      {Group.users.length} members
-                    </Text>
-                    <Text style={styles.timeAgo}>
-                      Updated a few seconds ago
-                    </Text>
-                    {this.renderGroupMembers(Group)}
                   </View>
                 </View>
-              </View>
-              </TouchableOpacity>
-             
-            );
-            }else {
+                </TouchableOpacity>
+             );
+            } else {
               return <FlatList></FlatList>
             }
           }}/>
@@ -128,6 +129,9 @@ class Group extends Component {
     );
   }
 }
+
+
+// StyleSheet
 const styles = StyleSheet.create({
   root: {
     backgroundColor: "#212121"
@@ -182,6 +186,4 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     marginTop:10
   }
-}); 
-
-export default Group;
+});

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MapView, {PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
-import { Text, Button, Alert,TouchableOpacity, StyleSheet, Image, Modal, View, TextInput} from 'react-native';
+import { Text, Button, TouchableOpacity, StyleSheet, Image, Modal, View} from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
@@ -85,10 +85,10 @@ export default class Map extends Component {
             keyword: "",
             type: "restaurant",
             centroid: {latitude: 0, longitude: 0},
-            modalVisible:true
+            modalVisible: false
         }
     }
-    static navigationOptions = () => {
+    static navigationOptions = ({navigation}) => {
         return {
             headerStyle: {backgroundColor: "#29293d"},
             headerTintColor: '#fff',
@@ -98,7 +98,7 @@ export default class Map extends Component {
             title: 'Map',
             headerRight: (
             <Button
-                onPress={() => this.renderFilter}
+                onPress={navigation.getParam('renderFilter')}
                 title="Filter"
                 color="gold"
             />
@@ -106,13 +106,18 @@ export default class Map extends Component {
         }
     };
 
+    componentDidMount() {
+        this.props.navigation.setParams({ renderFilter: this._renderfilter });
+    }
+
     randomColor() {
         return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
     }
-    renderfilter() {
-        console.log("here")
-        this.setState({modalVisible:true})
+
+    _renderfilter = () => {
+        this.setState({modalVisible: true});
     }
+
     renderPlacesMarker() {
         if(this.state.havePlaces&& this.state.default){
            return this.state.dataSource.map((place) => {
@@ -165,14 +170,8 @@ export default class Map extends Component {
     }
 
     randomClick = () => {
-        //function to handle click on floating Action Button
         this.setState({random: true, default:false});
     };
-
-    // filterClick = () => {
-    //     //function to handle click on floating Action Button
-    //     this.setState({filteredMarker: true, default:false, filter: "cafe"});
-    // };
 
     centerClick = (center, type) => {
         if(!type){
@@ -314,7 +313,7 @@ export default class Map extends Component {
         </TouchableOpacity>
         <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => this.centerClick(centroid)}
+                onPress={() => this.centerClick(centroid, this.state.type, this.state.keyword)}
                 style={styles.TouchableOpacityStyle2}>
           <Image
             source={require('../assets/flag-icon.png')}
