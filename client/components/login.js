@@ -18,7 +18,6 @@ const User = t.struct({
   password: t.String,
   TermsOfService: t.Boolean
 });
-  
 const formStyles = {
   ...Form.stylesheet,
   formGroup: {
@@ -26,21 +25,23 @@ const formStyles = {
       marginBottom: 10,
       color: 'white'
     },
-    textbox: {
-      normal: {
+  },
+  textbox: {
+    normal: {
       color: "white",
-        fontSize: 15,
-      height: 36,
-      paddingHorizontal: 7,
-      borderRadius: 4,
-      borderColor: "white",
-      borderWidth: 1,
-      marginBottom: 5,
-      fontWeight: '600'
-      },
-      error: {
-        color: "white",
-        fontSize: 15,
+      fontSize: 15,
+    height: 36,
+    paddingHorizontal: 7,
+    borderRadius: 4,
+    borderColor: "white",
+    borderWidth: 1,
+    marginBottom: 5,
+    fontWeight: '600',
+    minWidth: '50%'
+    },
+    error: {
+      color: "red",
+      fontSize: 15,
       height: 36,
       paddingHorizontal: 7,
       borderRadius: 4,
@@ -48,22 +49,6 @@ const formStyles = {
       borderWidth: 1,
       marginBottom: 5,
       fontWeight: '600'
-      }
-    },
-    controlLabel: {
-      normal: {
-        color: 'white',
-        fontSize: 18,
-        marginBottom: 7,
-        fontWeight: '600'
-      },
-      // the style applied when a validation error occours
-      error: {
-        color: 'red',
-        fontSize: 18,
-        marginBottom: 7,
-        fontWeight: '600'
-      },
     }
   },
   controlLabel: {
@@ -81,7 +66,8 @@ const formStyles = {
       fontWeight: '600'
     },
   }
-}
+}  
+
   
 const options = {
   fields: {
