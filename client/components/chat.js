@@ -26,8 +26,9 @@ export default class Chat extends React.Component {
         <Button
           onPress={() => {
             const userID = navigation.getParam('userID');
-            const groupID = navigation.getParam('groupID')
-            navigation.navigate('Map', {userID: userID, groupID: groupID});
+            const groupID = navigation.getParam('groupID');
+            const userLocation = navigation.getParam('userLocation');
+            navigation.navigate('Map', {userID: userID, groupID: groupID, userLocation: userLocation});
           }}
           title="Map"
           color="orange"

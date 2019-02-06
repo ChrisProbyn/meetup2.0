@@ -211,6 +211,8 @@ export default class Map extends Component {
     
     render() {
         const groupID = this.props.navigation.getParam('groupID');
+        const userLocation = this.props.navigation.getParam('userLocation');
+        // console.log(Number(userLocation.coords.latitude.toFixed(6)))
         const query = gql`
         {
             group(id:${groupID}){
@@ -282,7 +284,7 @@ export default class Map extends Component {
             strokeWidth={6}
         />
 
-            {data.group.users.filter(user => user.location.lat != 49.281372).map(marker => (
+            {data.group.users.filter(user => user.location.lat != Number(userLocation.coords.latitude.toFixed(6))).map(marker => (
                 <MapView.Marker 
                 coordinate={{
                     latitude: marker.location.lat,
