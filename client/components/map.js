@@ -3,9 +3,8 @@ import MapView, {PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
 import { Text, Button, Alert,TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import mapStyle from "./mapstyle.js"
-import apikey from "./apikey.js"
-// import { Accelerometer } from 'expo';
+import mapStyle from "./mapstyle.js";
+import apikey from "./apikey.js";
 
 // const flagImage = require('../assets/flag-icon.png')
 const resImage = require('../assets/res-icon.png')
@@ -19,9 +18,9 @@ export default class Map extends Component {
             random: false,
             filteredMarker: false,
             filter: "",
-            accelerometerData: {},
-            tilt: false,
-            centroid: {latitude: 0, longitude: 0}
+            centroid: {latitude: 0, longitude: 0},
+            type:"restaurant",
+            keyword: ""
         }
     }
     static navigationOptions = () => {
@@ -37,26 +36,12 @@ export default class Map extends Component {
                 onPress={() => {
                 Alert.alert('Poll Button Clicked');
                 }}
-                title="Poll"
+                title="Filter"
                 color="gold"
             />
             ),
         }
     };
-
-    // componentDidMount(){
-    //     return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=49.2790,-123.1187&radius=150&type=restaurant&key=${apikey}`)
-    //       .then((response) => response.json())
-    //       .then((responseJson) => {
-    //         this.setState({
-    //             havePlaces: true,
-    //             dataSource: responseJson.results,
-    //           });
-    //       })
-    //       .catch((error) =>{
-    //         console.error(error);
-    //       });
-    // }
 
     randomColor() {
         return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
@@ -123,7 +108,7 @@ export default class Map extends Component {
     //     this.setState({filteredMarker: true, default:false, filter: "cafe"});
     // };
 
-    centerClick = (center) => {
+    centerClick = (center, type, keyword) => {
         return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=150&type=restaurant&key=${apikey}`)
             .then((response) => response.json())
             .then((responseJson) => {
@@ -242,7 +227,7 @@ export default class Map extends Component {
         </TouchableOpacity>
         <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => this.centerClick(centroid)}
+                onPress={() => this.centerClick(centroid, this.state.type, this.state.keyword)}
                 style={styles.TouchableOpacityStyle2}>
           <Image
             source={require('../assets/flag-icon.png')}

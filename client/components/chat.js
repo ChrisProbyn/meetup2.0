@@ -9,7 +9,7 @@ import ApolloClient from "apollo-boost"
 
 const apolloClient = new ApolloClient({
   uri: "http://192.168.88.70:4000/graphql"
- });
+});
 
 firebase.initializeApp(firebaseConfig);
 
@@ -26,7 +26,7 @@ export default class Chat extends React.Component {
         <Button
           onPress={() => {
             const userID = navigation.getParam('userID');
-            navigation.navigate('Map', {userID: userID})
+            navigation.navigate('Map', {userID: userID});
           }}
           title="Map"
           color="orange"
@@ -46,21 +46,21 @@ export default class Chat extends React.Component {
   }  
 
   componentDidMount() {
-    this.startMessagesListening()
+    this.startMessagesListening();
   }
+
   onChangeText = userEmail => this.setState({ userEmail }); 
 
+  // Set modal to true when add user button is clicked
   clickHandler = () => {
-    //function to handle click on floating Action Button
     this.setState({modalVisible: true});
   };
 
   onSend(messages = []) {
     this.setState(previousState => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }))
-
-    this.addMessage(messages.slice(-1).pop())
+      messages: GiftedChat.append(previousState.messages, messages)
+    }));
+    this.addMessage(messages.slice(-1).pop());
   }
   
   addMessage(message) {
@@ -76,19 +76,19 @@ export default class Chat extends React.Component {
     });
   }
   startMessagesListening() {
-    const groupID = this.props.navigation.getParam('groupID')
+    const groupID = this.props.navigation.getParam('groupID');
     firebase.database().ref('messages/' + groupID).on('value', (snapshot) => {
       const messagesObj = snapshot.val();
       
-      if(!messagesObj){
+      if(!messagesObj) {
         this.setState({
           messages: []
-        })
-      } else{
-        const messages = Object.keys(messagesObj).map(msgKey => messagesObj[msgKey])
+        });
+      } else {
+        const messages = Object.keys(messagesObj).map(msgKey => messagesObj[msgKey]);
         this.setState({
           messages: messages.reverse()
-        })
+        });
       }
     });
   }
@@ -99,7 +99,7 @@ export default class Chat extends React.Component {
   };
 
   render() {
-    const userID = this.props.navigation.getParam('userID')
+    const userID = this.props.navigation.getParam('userID');
     const groupID = this.props.navigation.getParam('groupID');
     const query = gql`
     {
@@ -112,7 +112,7 @@ export default class Chat extends React.Component {
           email
         }
       }
-     }`
+     }`;
      
     addNewUser = (data) => {
       const allUsers = data.users;
@@ -153,7 +153,7 @@ export default class Chat extends React.Component {
           })
           .then(result => {this.setState({modalVisible:false})})
           .catch(error => { console.log(error) });
-          this.setState({modalVisible:false})
+            this.setState({modalVisible:false});
           }
       } else{
         Alert.alert(
@@ -181,13 +181,12 @@ export default class Chat extends React.Component {
         if(loading) return <Text>Loading Container...</Text>;
         if(error) return <Text>Group Component ERROR! {error}</Text>;
         return (
-         <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-          presentationStyle={"overFullScreen"}
-          >
-          
+          <Modal
+              animationType="slide"
+              transparent={true}
+              visible={this.state.modalVisible}
+              presentationStyle={"overFullScreen"}
+            >
             <View style={styles.Modalcontainer}>
               <Text style={styles.title}>Add your friends email:</Text>
               <TextInput
@@ -196,34 +195,38 @@ export default class Chat extends React.Component {
                 placeHolder="User"
               />
               <TouchableOpacity >
-                <Button title="Add"
+                <Button 
+                  title="Add"
                   color='#ffd700'
-                  onPress={() => addNewUser(data)}/>
+                  onPress={() => addNewUser(data)}
+                />
               </TouchableOpacity>
               <TouchableOpacity >
-                <Button title="Dismiss"
+                <Button 
+                  title="Dismiss"
                   color='#ffd700'
-                  onPress={() => this.setState({modalVisible: false})}/>
+                  onPress={() => this.setState({modalVisible: false})}
+                />
               </TouchableOpacity>
             </View>
-
-        </Modal>
+          </Modal>
         )}}
-        </Query>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={this.clickHandler}
-          style={styles.TouchableOpacityStyle}>
-          <Image
-            source={require('../assets/add-icon.png')}
-            style={styles.FloatingButtonStyle}
-          />
-        </TouchableOpacity>
-       
-      </View>
+      </Query>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={this.clickHandler}
+        style={styles.TouchableOpacityStyle}>
+        <Image
+          source={require('../assets/add-icon.png')}
+          style={styles.FloatingButtonStyle}
+        />
+      </TouchableOpacity>
+     </View>
     )
   }
 }
+
+// StyleSheet
 const offset = 24;
 const styles = StyleSheet.create({
   container: {
