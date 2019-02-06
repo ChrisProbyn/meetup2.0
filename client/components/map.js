@@ -1,18 +1,28 @@
 import React, {Component} from 'react';
 import MapView, {PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
-import { Text, Button, Alert } from 'react-native';
+import { Text, Button, Alert,TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
 import apikey from "./apikey.js"
+// import { Accelerometer } from 'expo';
 
-const flagImage = require('../assets/flag-icon.png')
+// const flagImage = require('../assets/flag-icon.png')
 const resImage = require('../assets/res-icon.png')
 
 export default class Map extends Component {
     constructor(props){
         super(props);
-        this.state ={ havePlaces: false}
+        this.state ={ 
+            havePlaces: false,
+            default: true,
+            random: false,
+            filteredMarker: false,
+            filter: "",
+            accelerometerData: {},
+            tilt: false,
+            centroid: {latitude: 0, longitude: 0}
+        }
     }
     static navigationOptions = () => {
         return {
@@ -34,27 +44,26 @@ export default class Map extends Component {
         }
     };
 
-    componentDidMount(){
-        return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=49.2790,-123.1187&radius=150&type=restaurant&key=${apikey}`)
-          .then((response) => response.json())
-          .then((responseJson) => {
-            //   console.log(responseJson)
-            this.setState({
-                havePlaces: true,
-                dataSource: responseJson.results,
-              });
-          })
-          .catch((error) =>{
-            console.error(error);
-          });
-      }
+    // componentDidMount(){
+    //     return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=49.2790,-123.1187&radius=150&type=restaurant&key=${apikey}`)
+    //       .then((response) => response.json())
+    //       .then((responseJson) => {
+    //         this.setState({
+    //             havePlaces: true,
+    //             dataSource: responseJson.results,
+    //           });
+    //       })
+    //       .catch((error) =>{
+    //         console.error(error);
+    //       });
+    // }
 
     randomColor() {
-        return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';;
+        return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
     }
 
     renderPlacesMarker() {
-        if(this.state.havePlaces){
+        if(this.state.havePlaces&& this.state.default){
            return this.state.dataSource.map((place) => {
                 return <MapView.Marker
                 key={place.id} 
@@ -69,6 +78,67 @@ export default class Map extends Component {
         }
     }
 
+    renderRandomMarker() {
+        if(this.state.havePlaces && this.state.random){
+            let highRated =  this.state.dataSource.filter(place => place.rating > 4).map((place) => {
+            return <MapView.Marker
+                        key={place.id} 
+                        coordinate={{
+                            latitude: place.geometry.location.lat,
+                            longitude: place.geometry.location.lng}}
+                        title={place.name}
+                        image={resImage}
+                        description={`rating: ${place.rating}/5, types: ${place.types[0]}`}
+                    />
+            })
+            let randomNumber = Math.floor(Math.random() * highRated.length)
+            return highRated[randomNumber];
+        }
+    }
+
+    renderFilteredMarker() {
+        const filter = this.state.filter
+        if(this.state.filteredMarker && this.state.havePlaces && filter){
+            return this.state.dataSource.filter(place => place.types.includes(filter)).map((place) => {
+                return <MapView.Marker
+                            key={place.id} 
+                            coordinate={{
+                                latitude: place.geometry.location.lat,
+                                longitude: place.geometry.location.lng}}
+                            title={place.name}
+                            image={resImage}
+                            description={`rating: ${place.rating}/5, types: ${place.types[0]}`}
+                        />
+            })
+        }
+    }
+
+    randomClick = () => {
+        //function to handle click on floating Action Button
+        this.setState({random: true, default:false});
+    };
+
+    // filterClick = () => {
+    //     //function to handle click on floating Action Button
+    //     this.setState({filteredMarker: true, default:false, filter: "cafe"});
+    // };
+
+    centerClick = (center) => {
+        return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=150&type=restaurant&key=${apikey}`)
+            .then((response) => response.json())
+            .then((responseJson) => {
+            this.setState({
+                havePlaces: true,
+                random: false,
+                default: true,
+                dataSource: responseJson.results,
+                });
+            })
+            .catch((error) =>{
+            console.error(error);
+            });
+    };
+    
     render() {
         const query = gql`
         {
@@ -85,7 +155,7 @@ export default class Map extends Component {
             }
         }
         `;
-        Center = (points) => {
+         Center = (points) => {
           var l = points.length;
         
           return points.reduce(function(center, p, i) {
@@ -96,7 +166,6 @@ export default class Map extends Component {
                 center.latitude /= l;
                 center.longitude /= l;
             }
-        
             return center;
           }, {latitude: 0, longitude: 0});
         };
@@ -120,8 +189,8 @@ export default class Map extends Component {
           return {latitude: user.location.lat, longitude: user.location.long}
         })
         centroid = Center(positions);
-        
         return (
+            <>
           <MapView
             customMapStyle={mapStyle}
             provider={PROVIDER_GOOGLE}
@@ -153,13 +222,35 @@ export default class Map extends Component {
                 pinColor={this.randomColor()}
                 />
             ))}
-            <MapView.Marker 
+            {/* <MapView.Marker 
                 coordinate={centroid}
                 title={"center"}
                 image={flagImage}
-                />
+                /> */}
+            {this.renderFilteredMarker()}
             {this.renderPlacesMarker()}
+            {this.renderRandomMarker()}
           </MapView>
+                <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={this.randomClick}
+                style={styles.TouchableOpacityStyle1}>
+          <Image
+            source={require('../assets/shuffle-icon.png')}
+            style={styles.FloatingButtonStyle}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => this.centerClick(centroid)}
+                style={styles.TouchableOpacityStyle2}>
+          <Image
+            source={require('../assets/flag-icon.png')}
+            style={styles.FloatingButtonStyle}
+          />
+        </TouchableOpacity>
+
+        </>
           )
         }
     }
@@ -167,3 +258,32 @@ export default class Map extends Component {
       );
     }
   }
+
+
+  const styles = StyleSheet.create({
+ 
+    TouchableOpacityStyle1: {
+      position: 'absolute',
+      width: 50,
+      height: 50,
+      alignItems: 'center',
+      justifyContent: 'center',
+      right: 15,
+      top: 30,
+    },
+    TouchableOpacityStyle2: {
+        position: 'absolute',
+        width: 50,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        left: 15,
+        top: 30,
+      },
+   
+    FloatingButtonStyle: {
+      resizeMode: 'contain',
+      width: 50,
+      height: 50,
+    },
+  });
