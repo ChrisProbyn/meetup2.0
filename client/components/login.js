@@ -7,7 +7,7 @@ import t from "tcomb-form-native";
 
 //Change to current local IP Address
 const apolloClient = new ApolloClient({
-  uri: "http://192.168.88.70:4000/graphql"
+  uri: "http://192.168.88.68:4000/graphql"
 });
 
 //use tcomb format to structure login form
