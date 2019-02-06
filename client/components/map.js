@@ -5,10 +5,14 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
 import apikey from "./apikey.js"
+
 // import { Accelerometer } from 'expo';
 
 // const flagImage = require('../assets/flag-icon.png')
 const resImage = require('../assets/res-icon.png')
+
+
+
 
 export default class Map extends Component {
     constructor(props){
@@ -18,10 +22,10 @@ export default class Map extends Component {
             default: true,
             random: false,
             filteredMarker: false,
-            filter: "",
-            accelerometerData: {},
-            tilt: false,
-            centroid: {latitude: 0, longitude: 0}
+            keyword: "",
+            type: "restaurant",
+            centroid: {latitude: 0, longitude: 0},
+            modalVisible:true
         }
     }
     static navigationOptions = () => {
@@ -34,10 +38,8 @@ export default class Map extends Component {
             title: 'Map',
             headerRight: (
             <Button
-                onPress={() => {
-                Alert.alert('Poll Button Clicked');
-                }}
-                title="Poll"
+                onPress={() => this.renderFilter}
+                title="Filter"
                 color="gold"
             />
             ),
@@ -61,7 +63,10 @@ export default class Map extends Component {
     randomColor() {
         return 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
     }
-
+    renderfilter() {
+        console.log("here")
+        this.setState({modalVisible:true})
+    }
     renderPlacesMarker() {
         if(this.state.havePlaces&& this.state.default){
            return this.state.dataSource.map((place) => {
@@ -123,8 +128,9 @@ export default class Map extends Component {
     //     this.setState({filteredMarker: true, default:false, filter: "cafe"});
     // };
 
-    centerClick = (center) => {
-        return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=150&type=restaurant&key=${apikey}`)
+    centerClick = (center, type, keyword) => {
+        if(!type){
+        return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=150&type=${this.state.type}&key=${apikey}`)
             .then((response) => response.json())
             .then((responseJson) => {
             this.setState({
@@ -137,6 +143,11 @@ export default class Map extends Component {
             .catch((error) =>{
             console.error(error);
             });
+        } else if(type && keyword){
+            //render nightlife with keyword
+        } else if(!type && keyword){
+            console.log("hello")
+        }
     };
     
     render() {
@@ -257,15 +268,15 @@ export default class Map extends Component {
           >
           
             <View style={styles.Modalcontainer}>
-              <Text style={styles.title}>Add your friends email:</Text>
-              <TextInput
-                onChangeText={this.onChangeText}
-                style={styles.nameInput}
-                placeHolder="User"
-              />
+          
               <TouchableOpacity >
-                <Button title="Add"
-                  onPress={() => addNewUser(data)}/>
+                <Button title="Refine"
+                  onPress={() => this.centerClick(centroid,,)}/>
+              </TouchableOpacity>
+              <TouchableOpacity >
+                <Button title="Dismiss"
+                  color='#ffd700'
+                  onPress={() => this.setState({modalVisible: false})}/>
               </TouchableOpacity>
             </View>
 
@@ -280,7 +291,7 @@ export default class Map extends Component {
     }
   }
 
-
+  
   const styles = StyleSheet.create({
  
     TouchableOpacityStyle1: {
@@ -297,6 +308,7 @@ export default class Map extends Component {
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: "#3d3d5c"
       },
     TouchableOpacityStyle2: {
         position: 'absolute',
