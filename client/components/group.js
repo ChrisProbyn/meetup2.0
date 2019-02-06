@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { View, FlatList, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Platform, StyleSheet, View, FlatList, Button, Text, TouchableOpacity } from 'react-native';
+import { Constants, Location, Permissions } from 'expo';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
 export default class Group extends Component {
+  state = {
+    location: null,
+    errorMessage: null,
+  };
+
   static navigationOptions = ({navigation}) => {
     return {
       headerStyle: {backgroundColor: "#212121"},
@@ -32,6 +38,29 @@ export default class Group extends Component {
     }
   };
 
+  componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
+  };
+
+
   onChatPress = (groupid) => {
     const userID = this.props.navigation.getParam('userID');
     this.props.navigation.navigate('Chat', {userID: userID, groupID: groupid});
@@ -55,7 +84,7 @@ export default class Group extends Component {
   }
 
   render() {
-    const userID = this.props.navigation.getParam('userID')
+    const userID = this.props.navigation.getParam('userID');
     const query = gql`
     {
       user(id: ${userID}){
@@ -68,7 +97,14 @@ export default class Group extends Component {
           }
         }
       }
-    }`
+    }`;
+
+    if (this.state.errorMessage) {
+      text = this.state.errorMessage;
+    } else if (this.state.location) {
+      text = JSON.stringify(this.state.location);
+      console.log(this.state.location)
+    }
 
     return (
       <Query query={query} pollInterval={50}>

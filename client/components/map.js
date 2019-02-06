@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MapView, {PROVIDER_GOOGLE, Polyline} from 'react-native-maps';
-import { Text, Button, TouchableOpacity, StyleSheet, Image, Modal, View} from 'react-native';
+import { Text, Button, TouchableOpacity, StyleSheet, Image, Modal, View, Alert} from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import mapStyle from "./mapstyle.js"
@@ -85,7 +85,7 @@ export default class Map extends Component {
             keyword: "",
             type: "restaurant",
             centroid: {latitude: 0, longitude: 0},
-            modalVisible: false
+            modalVisible: false,
         }
     }
     static navigationOptions = ({navigation}) => {
@@ -98,7 +98,7 @@ export default class Map extends Component {
             title: 'Map',
             headerRight: (
             <Button
-                onPress={navigation.getParam('renderFilter')}
+                onPress={navigation.getParam('renderFilter') }
                 title="Filter"
                 color="gold"
             />
@@ -115,7 +115,7 @@ export default class Map extends Component {
     }
 
     _renderfilter = () => {
-        this.setState({modalVisible: true});
+        this.setState({modalVisible: true });
     }
 
     renderPlacesMarker() {
