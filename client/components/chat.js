@@ -3,7 +3,7 @@ import { Button, View, StyleSheet,Text, Image, TouchableOpacity, Alert, Modal , 
 import { GiftedChat } from 'react-native-gifted-chat'
 import * as firebase from 'firebase';
 import firebaseConfig from './firebase.js'
-import { Query, Mutation } from "react-apollo";
+import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import ApolloClient from "apollo-boost"
 
@@ -11,12 +11,16 @@ const apolloClient = new ApolloClient({
   uri: "http://192.168.88.68:4000/graphql"
  });
 
-
 firebase.initializeApp(firebaseConfig);
 
 export default class Chat extends React.Component {
   static navigationOptions = ({navigation}) => {
     return {
+      headerStyle: {backgroundColor: "#29293d"},
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
       title: 'Chat',
       headerRight: (
         <Button
@@ -77,7 +81,6 @@ export default class Chat extends React.Component {
       const messagesObj = snapshot.val();
       
       if(!messagesObj){
-        // firebase.database().ref('messages/' + groupID).push({});
         this.setState({
           messages: []
         })
@@ -89,15 +92,14 @@ export default class Chat extends React.Component {
       }
     });
   }
-  validateEmail(email){
+
+  validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
-    };
-
-
+  };
 
   render() {
-    
+    const userID = this.props.navigation.getParam('userID')
     const groupID = this.props.navigation.getParam('groupID');
     const query = gql`
     {
@@ -124,9 +126,7 @@ export default class Chat extends React.Component {
             emailNotInGroup = false;
             Alert.alert(
               'user is allready in group',
-              'idiot',
               [
-                
                 {text: 'OK', onPress: () => console.log('OK Pressed')},
               ],
               {cancelable: false},
@@ -160,7 +160,6 @@ export default class Chat extends React.Component {
           'email is not valid',
           'email is not valid',
           [
-            
             {text: 'OK', onPress: () => console.log('OK Pressed')},
           ],
           {cancelable: false},
@@ -168,7 +167,7 @@ export default class Chat extends React.Component {
       }
     }
 
-    const userID = this.props.navigation.getParam('userID')
+ 
 
     return (
       <View style={styles.container}>
@@ -179,7 +178,7 @@ export default class Chat extends React.Component {
             _id: userID,
           }}
         />
-      <Query query={query} >
+      <Query query={query}>
       {({loading, error, data}) => {
         if(loading) return <Text>Loading Container...</Text>;
         if(error) return <Text>Group Component ERROR! {error}</Text>;
@@ -200,7 +199,13 @@ export default class Chat extends React.Component {
               />
               <TouchableOpacity >
                 <Button title="Add"
+                  color='#ffd700'
                   onPress={() => addNewUser(data)}/>
+              </TouchableOpacity>
+              <TouchableOpacity >
+                <Button title="Dismiss"
+                  color='#ffd700'
+                  onPress={() => this.setState({modalVisible: false})}/>
               </TouchableOpacity>
             </View>
 
@@ -229,7 +234,7 @@ const styles = StyleSheet.create({
   },
   Modalcontainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#3d3d5c',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -246,6 +251,7 @@ const styles = StyleSheet.create({
     marginTop: offset,
     marginLeft: offset,
     fontSize: offset,
+    color: 'white'
   },
   TouchableOpacityStyle: {
     position: 'absolute',

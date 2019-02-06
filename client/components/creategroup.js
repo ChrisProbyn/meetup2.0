@@ -9,6 +9,17 @@ const apolloClient = new ApolloClient({
  });
 
 export default class CreateGroup extends Component {
+
+  static navigationOptions ={
+      headerStyle: {backgroundColor: "#29293d"},
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+      title: 'Create A Group',
+  };
+
+
   state = {
     grpname: ""
   }
@@ -45,6 +56,7 @@ export default class CreateGroup extends Component {
       />
       <TouchableOpacity >
         <Button title="Create"
+        color= '#ffd700'
         onPress={() => createNewGroup()}/>
       </TouchableOpacity>
     </View>
@@ -56,7 +68,7 @@ export default class CreateGroup extends Component {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#3d3d5c',
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -73,6 +85,7 @@ export default class CreateGroup extends Component {
       marginTop: offset,
       marginLeft: offset,
       fontSize: offset,
+      color: 'white',
     },
     buttonText: {
       marginLeft: offset,

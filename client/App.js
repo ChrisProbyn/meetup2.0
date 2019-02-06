@@ -14,7 +14,7 @@ import { ApolloProvider} from 'react-apollo';
 import React from 'react';
 
  const client = new ApolloClient({
-  uri: "http://192.168.88.68:4000/graphql"
+  uri: "http://192.168.88.70:4000/graphql"
  });
 
 // Import React Navigation

@@ -1,22 +1,22 @@
 import React, {Component} from 'react';
 import {View, Button, Alert, Text} from 'react-native';
-import t from 'tcomb-form-native';
 import { Query } from "react-apollo";
-import gql from "graphql-tag";
-
 import ApolloClient from "apollo-boost"
+import gql from "graphql-tag";
+import t from 'tcomb-form-native';
 
+//Change to current local IP Address
 const apolloClient = new ApolloClient({
   uri: "http://192.168.88.68:4000/graphql"
- });
+});
 
 const Form = t.form.Form;
 const User = t.struct({
-    email: t.String,
-    username: t.maybe(t.String),
-    password: t.String,
-    terms: t.Boolean
-  });
+  email: t.String,
+  username: t.maybe(t.String),
+  password: t.String,
+  TermsOfService: t.Boolean
+});
   
   const formStyles = {
     ...Form.stylesheet,
@@ -75,7 +75,7 @@ const User = t.struct({
       password: {
        
       },
-      terms: {
+      TermsOfService: {
       
       },
     },
@@ -141,7 +141,7 @@ export default class Login extends Component {
       const value = this._form.getValue();
       
       
-      if(value && !value.terms){
+      if(value && !value.TermsOfService){
         Alert.alert(
           'Agree to terms',
           'Agree to terms',
@@ -151,7 +151,7 @@ export default class Login extends Component {
           ],
           {cancelable: false},
         )
-      }else if(value && value.terms) {
+      }else if(value && value.TermsOfService) {
        
         for(var user of users){
           if (user.email === value.email) {

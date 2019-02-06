@@ -11,7 +11,7 @@ export default class Main extends Component {
   };
 
   onPress = () => {
-      this.props.navigation.navigate('Group', {userID:6000});
+      this.props.navigation.navigate('Map', {userID: 6000, groupID: 3000});
   };
 
   render() {
@@ -35,10 +35,10 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   text: {
-      textAlign: 'center',
-      fontSize: 45,
-      color: 'white',
-      marginBottom: 30,
-      width: "90%"
+    textAlign: 'center',
+    fontSize: 45,
+    color: 'white',
+    marginBottom: 30,
+    width: "90%"
   },
 });
