@@ -97,11 +97,13 @@ export default class Map extends Component {
             },
             title: 'Map',
             headerRight: (
-            <Button
-                onPress={navigation.getParam('renderFilter') }
-                title="Filter"
-                color="gold"
-            />
+            <TouchableOpacity
+                onPress={navigation.getParam('renderFilter')}
+            >
+                <Image
+                    source={require('../assets/beer-icon.png')}
+                />
+            </TouchableOpacity>
             ),
         }
     };
@@ -212,7 +214,6 @@ export default class Map extends Component {
     render() {
         const groupID = this.props.navigation.getParam('groupID');
         const userLocation = this.props.navigation.getParam('userLocation');
-        // console.log(Number(userLocation.coords.latitude.toFixed(6)))
         const query = gql`
         {
             group(id:${groupID}){
@@ -292,14 +293,10 @@ export default class Map extends Component {
                 }}
                 title={marker.username}
                 key={marker.id}
+                // image={require(`../assets/${6000}-icon.png`)}
                 pinColor={this.randomColor()}
                 />
             ))}
-            {/* <MapView.Marker 
-                coordinate={centroid}
-                title={"center"}
-                image={flagImage}
-                /> */}
             {this.renderFilteredMarker()}
             {this.renderPlacesMarker()}
             {this.renderRandomMarker()}

@@ -11,7 +11,7 @@ export default class Main extends Component {
   };
 
   onPress = () => {
-      this.props.navigation.navigate('Landing');
+      this.props.navigation.navigate('Group', {userID:6000, groupID: 3000});
   };
 
   render() {
@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    height: '100%'
+    height: '100%',
+    backgroundColor: 'transparent'
   },
   text: {
     textAlign: 'center',
