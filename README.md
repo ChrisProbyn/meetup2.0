@@ -64,10 +64,10 @@ npm start
 
 ## Built With
 
-* [React Native](https://facebook.github.io/react-native/) - The mobile front end framework used
+* [React Native](https://facebook.github.io/react-native/) - Mobile front end framework
 * [Expo](https://expo.io/) - Mobile development tools
 * [GraphQL](https://graphql.org/) - API query language
-* [Node JS](https://nodejs.org/en/) - Backend frameworks
+* [Node JS](https://nodejs.org/en/) - Backend framework
 * [Postgres](https://www.postgresql.org/) - SQL framework
 
 
