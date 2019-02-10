@@ -24,6 +24,10 @@ After following the installation instructions bellow you can use our app
 ```
 git clone git@github.com:ChrisProbyn/meetup2.0.git
 ```
+* create all of the necessary acounts:
+    * firebase project for the realtime database
+    * google api acount for the places and map API
+    * expo account
 
 * then go into both the client and ServerNode folders and install the dependencies
 
@@ -34,6 +38,9 @@ cd ..
 cd ServerNode
 npm install
 ```
+* create a database using the postgres CLI and add the information into an env in your ServerNode folder
+* create a file apikey.js in /client/components/ and add/export your google api key.
+* create a file firebase.js in /client/components/ and add/export your firebase project info.
 * migrate and seed the database
 ```
 cd ServerNode
