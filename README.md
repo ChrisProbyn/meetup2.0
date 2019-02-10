@@ -1,26 +1,13 @@
 # Meetup
 
 Meetup is an Ios and Andriod app that helps groups of friends decide on what restaurant or bar to go to based on the groups location. It was made using React Native, GraphQL, Node JS, Postgres, and Expo.
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+* first clone the repository to your local machine
 
 ```
-Give the example
+git clone git@github.com:ChrisProbyn/meetup2.0.git
 ```
 
 And repeat
@@ -31,6 +18,13 @@ until finished
 
 End with an example of getting some data out of the system or using it for a little demo
 
+### Usage
+
+What things you need to install the software and how to install them
+
+```
+Give examples
+```
 
 
 ## Deployment
