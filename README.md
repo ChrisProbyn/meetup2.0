@@ -55,17 +55,13 @@ npm start
     2. open the expo app and scan the QR code genertated by the expo client in your browser
 
 
-
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [React Native](https://facebook.github.io/react-native/) - The mobile front end framework used
+* [Expo](https://expo.io/) - Mobile development tools
+* [GraphQL](https://graphql.org/) - API query language
+* [Node JS](https://nodejs.org/en/) - Backend frameworks
+* [Postgres](https://www.postgresql.org/) - SQL framework
 
 
 
