@@ -72,7 +72,7 @@ Add additional notes about how to deploy this on a live system
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Chris Probyn** - [ChrisProbyn](https://github.com/ChrisProbyn)
+* **Brian Wu** - [wubrian](https://github.com/wubrian)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
