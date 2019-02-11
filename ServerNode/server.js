@@ -229,7 +229,6 @@ const resolvers = {
       })
     },
     checkUser: (root, {email, password}, context, info) => {
-      
       return knex("users").then((users) => {
         for(let user of users) {
           if (user.email === email && bcrypt.compareSync(password, user.password) ) {
