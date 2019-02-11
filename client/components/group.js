@@ -44,27 +44,27 @@ export default class Group extends Component {
     }
   };
 
-  // componentWillMount() {
-  //   if (Platform.OS === 'android' && !Constants.isDevice) {
-  //     this.setState({
-  //       errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-  //     });
-  //   } else {
-  //     this._getLocationAsync();
-  //   }
-  // }
+  componentWillMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
 
-  // _getLocationAsync = async () => {
-  //   let { status } = await Permissions.askAsync(Permissions.LOCATION);
-  //   if (status !== 'granted') {
-  //     this.setState({
-  //       errorMessage: 'Permission to access location was denied',
-  //     });
-  //   }
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
 
-  //   let location = await Location.getCurrentPositionAsync({});
-  //   this.setState({ location });
-  // };
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
+  };
 
 
   onChatPress = (groupid) => {
@@ -72,23 +72,23 @@ export default class Group extends Component {
     this.props.navigation.navigate('Chat', {userID: userID, groupID: groupid, userLocation: this.state.location});
   }
 
-  // haveUserLocation = () => {
-  //   const userID = this.props.navigation.getParam('userID');
-  //   if(this.state.location){
-  //     apolloClient.mutate({
-  //       variables: { userID: userID, lat: this.state.location.coords.latitude, long: this.state.location.coords.longitude},
-  //       mutation: gql`
-  //         mutation changeUserLocation($userID: ID, $lat: Float, $long: Float) {
-  //         changeUserLocation(userID: $userID, lat: $lat, long: $long) {
-  //           id
-  //         } 
-  //       }
-  //       `
-  //     })
-  //     .then(result => {console.log(result)})
-  //     .catch(error => { console.log(error) });
-  //   }
-  // }
+  haveUserLocation = () => {
+    const userID = this.props.navigation.getParam('userID');
+    if(this.state.location){
+      apolloClient.mutate({
+        variables: { userID: userID, lat: this.state.location.coords.latitude, long: this.state.location.coords.longitude},
+        mutation: gql`
+          mutation changeUserLocation($userID: ID, $lat: Float, $long: Float) {
+          changeUserLocation(userID: $userID, lat: $lat, long: $long) {
+            id
+          } 
+        }
+        `
+      })
+      .then(result => {console.log(result)})
+      .catch(error => { console.log(error) });
+    }
+  }
 
   renderGroupMembers = (group) => {
     if(group.users) {
@@ -128,7 +128,7 @@ export default class Group extends Component {
       text = this.state.errorMessage;
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
-      // this.haveUserLocation();
+      this.haveUserLocation();
     }
 
     return (
