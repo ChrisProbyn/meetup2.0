@@ -3,7 +3,7 @@ const ENV         = process.env.NODE_ENV || "development";
 const { ApolloServer, gql, PubSub, withFilter } = require('apollo-server');
 const {makeExecutableSchema} = require('graphql-tools');
 const knexConfig = require('./knexfile');
-
+const bcrypt = require('bcrypt');
 const knex = require('knex')(knexConfig[ENV]);
 
 const pubsub = new PubSub();
@@ -22,7 +22,9 @@ const typeDefs = gql`
     place_name: String
     location: Location
   }
-
+  type Check {
+    state: Boolean
+  }
   type Food_preferences {
     id: ID!
     Asian: Int
@@ -93,6 +95,7 @@ const typeDefs = gql`
     createUser(email: String, username: String, password: String): Member
     addUserToGroup(groupID: ID, email:String): Member
     #deleteGroup(GroupName: String): Group
+    checkUser(email: String, password: String): Boolean
 
   }
   
@@ -199,7 +202,8 @@ const resolvers = {
       })
     },
     createUser: (root, {email, username, password}, context, info) => {
-      return knex('users').returning("*").insert({email: email, username: username, password: password}).then((user) => {
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      return knex('users').returning("*").insert({email: email, username: username, password: hashedPassword}).then((user) => {
         const userId = user[0].id
         return knex("groups").returning('*').insert({Group_name: "Welcome to MeetUp"}).then((group=> {
           return knex("members").returning('*').insert({group_id: group[0].id, user_id: userId})
@@ -223,6 +227,19 @@ const resolvers = {
         let location_id = user[0].id
         return knex('users').update({location_id}).where('users.id', userID).returning('*').then(user => user[0])
       })
+    },
+    checkUser: (root, {email, password}, context, info) => {
+      
+      return knex("users").then((users) => {
+        for(let user of users) {
+          if (user.email === email && bcrypt.compareSync(password, user.password) ) {
+            return true;
+          }
+          
+        }
+        return false;
+      })
+     
     }
   },
   Subscription: {
