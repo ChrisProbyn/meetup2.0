@@ -169,10 +169,6 @@ const resolvers = {
     
       messages(group) {
         return knex.table('groups').leftJoin('messages', 'messages.group_id', 'groups.id').where("Group_name", `${group.Group_name}`);
-        // knex.table('groups').leftJoin('messages', 'messages.group_id','groups.id').leftJoin("users", "users.id", "messages.user_id").where("Group_name", `${group.Group_name}`).then((result) => {
-        //   return convertMessageToGiftedChatFormat(result)
-        
-        // })
       }
   },
   Message: {
@@ -180,11 +176,7 @@ const resolvers = {
       return knex('messages').leftJoin('users','messages.user_id',"users.id").where("messages.id", `${message.id}`).first("users.id", "email", "username");
     }
   },
-  // User: {
-  //   nightlife_preferences(user) {
-  //     return knex.table('users').leftJoin('nightlife_preferences', 'users.nightlife_preferences_id', 'nightlife_preferences.id').where('username', `bob`).first('Nightclub',"Bar","Pub");
-  //   }
-  // }
+
 
   Mutation: {
     createMessage: (root, {userID, Group_name, text}, context, info) => {
@@ -209,7 +201,9 @@ const resolvers = {
     createUser: (root, {email, username, password}, context, info) => {
       return knex('users').returning("*").insert({email: email, username: username, password: password}).then((user) => {
         const userId = user[0].id
-        return knex("members").returning('*').insert({group_id: 3000, user_id: userId})
+        return knex("groups").returning('*').insert({Group_name: "Welcome to MeetUp"}).then((group=> {
+          return knex("members").returning('*').insert({group_id: group[0].id, user_id: userId})
+        }))
       }).then((result) => {
         return result[0];
     });

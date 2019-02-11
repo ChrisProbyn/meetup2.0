@@ -109,7 +109,6 @@ export default class Group extends Component {
 
   render() {
     const userID = this.props.navigation.getParam('userID');
-    console.log(userID)
     const query = gql`
     {
       user(id: ${userID}){
