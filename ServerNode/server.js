@@ -90,7 +90,7 @@ const typeDefs = gql`
     createMessage(userID: Int!, Group_name: String!, text: String!): Message
     changeUserLocation(userID: ID, lat: Float, long: Float): User
     createGroup(Group_name: String, userID: ID): Member
-    createUser(email: String, username: String, password: String): User
+    createUser(email: String, username: String, password: String): Member
     addUserToGroup(groupID: ID, email:String): Member
     #deleteGroup(GroupName: String): Group
 
@@ -207,7 +207,12 @@ const resolvers = {
       })
     },
     createUser: (root, {email, username, password}, context, info) => {
-      return knex('users').returning("*").insert({email: email, username: username, password: password}).then((user) => user[0]);
+      return knex('users').returning("*").insert({email: email, username: username, password: password}).then((user) => {
+        const userId = user[0].id
+        return knex("members").returning('*').insert({group_id: 3000, user_id: userId})
+      }).then((result) => {
+        return result[0];
+    });
     },
     addUserToGroup:(root, {groupID, email}, context, info) => {
      

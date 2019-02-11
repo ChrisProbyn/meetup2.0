@@ -179,11 +179,11 @@ export default class Login extends Component {
             mutation CreateUser($email: String, $username: String,  $password: String) {
             createUser(email: $email, username: $username,  password: $password) {
              id
-             username
+             user_id
             }
            }`
         })
-        .then(result => { this.props.navigation.navigate('Group',{userID: result.data.createUser.id}) })
+        .then(result => { this.props.navigation.navigate('Group',{userID: result.data.createUser.user_id}) })
         .catch(error => { console.log(error) });
       } else {
         Alert.alert(
