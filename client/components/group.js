@@ -85,7 +85,7 @@ export default class Group extends Component {
         }
         `
       })
-      .then(result => {console.log(result)})
+      .then(result => {result})
       .catch(error => { console.log(error) });
     }
   }

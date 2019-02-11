@@ -191,11 +191,9 @@ export default class Map extends Component {
             console.error(error);
             });
         } else {
-            console.log(type)
              return fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.latitude},${center.longitude}&radius=300&type=night_club&key=${apikey}`)
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson)
             this.setState({
                 havePlaces: true,
                 random: false,
