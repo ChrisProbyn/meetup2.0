@@ -114,7 +114,7 @@ export default class Login extends Component {
           {cancelable: false},
         );
       } else if(this.validateEmail(value.email)){
-        console.log("here")
+        
         apolloClient.mutate({
           variables: { email: value.email, password: value.password },
           mutation: gql`
