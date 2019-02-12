@@ -2,8 +2,10 @@
 
 Meetup is an Ios and Andriod app that helps groups of friends decide on what restaurant or bar to go to based on the groups location. It was made using React Native, GraphQL, Node JS, Postgres, and Expo.
 
-![part1](/Assets/part1.gif?raw=true)
-![part2](/Assets/part2.gif?raw=true)
+Part1            |  Part2
+:-------------------------:|:-------------------------:
+![](/Assets/part1.gif?raw=true)  |  ![](/Assets/part2.gif?raw=true)
+
 
 
 ### Usage
