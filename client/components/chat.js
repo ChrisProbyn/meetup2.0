@@ -8,7 +8,7 @@ import gql from "graphql-tag";
 import ApolloClient from "apollo-boost"
 
 const apolloClient = new ApolloClient({
-  uri: "http://192.168.88.70:4000/graphql"
+  uri: "http://192.168.1.160:4000/graphql"
 });
 
 firebase.initializeApp(firebaseConfig);

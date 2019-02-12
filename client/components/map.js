@@ -7,8 +7,6 @@ import mapStyle from "./mapstyle.js"
 import apikey from "./apikey.js"
 import t from 'tcomb-form-native';
 
-
-// const flagImage = require('../assets/flag-icon.png')
 const resImage = require('../assets/res-icon.png')
 const Form = t.form.Form;
 const filter = t.struct({

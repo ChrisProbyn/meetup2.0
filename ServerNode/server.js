@@ -3,7 +3,7 @@ const ENV         = process.env.NODE_ENV || "development";
 const { ApolloServer, gql, PubSub, withFilter } = require('apollo-server');
 const {makeExecutableSchema} = require('graphql-tools');
 const knexConfig = require('./knexfile');
-
+const bcrypt = require('bcrypt');
 const knex = require('knex')(knexConfig[ENV]);
 
 const pubsub = new PubSub();
@@ -22,7 +22,9 @@ const typeDefs = gql`
     place_name: String
     location: Location
   }
-
+  type Check {
+    state: Boolean
+  }
   type Food_preferences {
     id: ID!
     Asian: Int
@@ -90,9 +92,10 @@ const typeDefs = gql`
     createMessage(userID: Int!, Group_name: String!, text: String!): Message
     changeUserLocation(userID: ID, lat: Float, long: Float): User
     createGroup(Group_name: String, userID: ID): Member
-    createUser(email: String, username: String, password: String): User
+    createUser(email: String, username: String, password: String): Member
     addUserToGroup(groupID: ID, email:String): Member
     #deleteGroup(GroupName: String): Group
+    checkUser(email: String, password: String): Boolean
 
   }
   
@@ -169,10 +172,6 @@ const resolvers = {
     
       messages(group) {
         return knex.table('groups').leftJoin('messages', 'messages.group_id', 'groups.id').where("Group_name", `${group.Group_name}`);
-        // knex.table('groups').leftJoin('messages', 'messages.group_id','groups.id').leftJoin("users", "users.id", "messages.user_id").where("Group_name", `${group.Group_name}`).then((result) => {
-        //   return convertMessageToGiftedChatFormat(result)
-        
-        // })
       }
   },
   Message: {
@@ -180,11 +179,7 @@ const resolvers = {
       return knex('messages').leftJoin('users','messages.user_id',"users.id").where("messages.id", `${message.id}`).first("users.id", "email", "username");
     }
   },
-  // User: {
-  //   nightlife_preferences(user) {
-  //     return knex.table('users').leftJoin('nightlife_preferences', 'users.nightlife_preferences_id', 'nightlife_preferences.id').where('username', `bob`).first('Nightclub',"Bar","Pub");
-  //   }
-  // }
+
 
   Mutation: {
     createMessage: (root, {userID, Group_name, text}, context, info) => {
@@ -207,7 +202,15 @@ const resolvers = {
       })
     },
     createUser: (root, {email, username, password}, context, info) => {
-      return knex('users').returning("*").insert({email: email, username: username, password: password}).then((user) => user[0]);
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      return knex('users').returning("*").insert({email: email, username: username, password: hashedPassword}).then((user) => {
+        const userId = user[0].id
+        return knex("groups").returning('*').insert({Group_name: "Welcome to MeetUp"}).then((group=> {
+          return knex("members").returning('*').insert({group_id: group[0].id, user_id: userId})
+        }))
+      }).then((result) => {
+        return result[0];
+    });
     },
     addUserToGroup:(root, {groupID, email}, context, info) => {
      
@@ -224,6 +227,18 @@ const resolvers = {
         let location_id = user[0].id
         return knex('users').update({location_id}).where('users.id', userID).returning('*').then(user => user[0])
       })
+    },
+    checkUser: (root, {email, password}, context, info) => {
+      return knex("users").then((users) => {
+        for(let user of users) {
+          if (user.email === email && bcrypt.compareSync(password, user.password) ) {
+            return true;
+          }
+          
+        }
+        return false;
+      })
+     
     }
   },
   Subscription: {

@@ -7,7 +7,7 @@ import t from "tcomb-form-native";
 
 //Change to current local IP Address
 const apolloClient = new ApolloClient({
-  uri: "http://192.168.88.70:4000/graphql"
+  uri: "http://192.168.1.160:4000/graphql"
 });
 
 //use tcomb format to structure login form
@@ -93,17 +93,17 @@ export default class Login extends Component {
   handleSubmitLogin = (data) => {
     const users = data.users;
     const value = this._form.getValue();
-    let userPassword = "";
+    let emailExists = false
     let userID;
 
     if(value) {
       for(let user of users) {
         if (user.email === value.email) {
-          userPassword = user.password;
+          emailExists= true;
           userID = user.id;
         } 
       }
-      if(!userPassword){
+      if(!emailExists){
         Alert.alert(
           'Incorrect Credentials',
           'Incorrect Credentials',
@@ -113,20 +113,32 @@ export default class Login extends Component {
           ],
           {cancelable: false},
         );
-      } else {
-        if(value.password === userPassword) {
-          this.props.navigation.navigate('Group', {userID: userID});
-        } else {
-          Alert.alert(
-            'Incorrect Credentials',
-            'Incorrect Credentials',
-            [
-              
-              {text: 'OK', onPress: () => console.log('OK Pressed')},
-            ],
-            {cancelable: false},
-          );
-        }
+      } else if(this.validateEmail(value.email)){
+        console.log("here")
+        apolloClient.mutate({
+          variables: { email: value.email, password: value.password },
+          mutation: gql`
+            mutation checkUser($email: String, $password: String) {
+            checkUser(email: $email, password: $password)
+           }`
+        })
+        .then(result => { 
+          if(result.data.checkUser) {
+            this.props.navigation.navigate('Group',{userID: userID})
+          } else {
+            Alert.alert(
+              'Incorrect Credentials',
+              'Incorrect Credentials',
+              [
+                
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ],
+              {cancelable: false},
+            );
+          }
+         })
+        .catch(error => { console.log(error) });
+        
       }
     }  
   }
@@ -179,11 +191,11 @@ export default class Login extends Component {
             mutation CreateUser($email: String, $username: String,  $password: String) {
             createUser(email: $email, username: $username,  password: $password) {
              id
-             username
+             user_id
             }
            }`
         })
-        .then(result => { this.props.navigation.navigate('Group',{userID: result.data.createUser.id}) })
+        .then(result => { this.props.navigation.navigate('Group',{userID: result.data.createUser.user_id}) })
         .catch(error => { console.log(error) });
       } else {
         Alert.alert(
