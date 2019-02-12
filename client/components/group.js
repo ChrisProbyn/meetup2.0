@@ -7,7 +7,7 @@ import ApolloClient from "apollo-boost"
 
 // Set Apollo IP Address
 const apolloClient = new ApolloClient({
-  uri: "http://192.168.1.160:4000/graphql"
+  uri: "http://192.168.88.147:4000/graphql"
  });
 
 export default class Group extends Component {
