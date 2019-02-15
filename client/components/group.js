@@ -3,12 +3,10 @@ import { Platform, StyleSheet, View, FlatList, Button, Text, TouchableOpacity } 
 import { Constants, Location, Permissions } from 'expo';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import ApolloClient from "apollo-boost"
 
+import apolloClient from './apolloClient.js'
 // Set Apollo IP Address
-const apolloClient = new ApolloClient({
-  uri: "http://192.168.1.68:4000/graphql"
- });
+
 
 export default class Group extends Component {
   state = {

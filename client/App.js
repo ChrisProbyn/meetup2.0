@@ -5,17 +5,15 @@ import Landing from './components/landing.js';
 import Group from './components/group.js';
 import CreateGroup from './components/creategroup.js';
 import Map from './components/map.js';
-
+import apolloClient from './components/apolloClient.js'
 //Import Apollo
-import ApolloClient from "apollo-boost";
+
 import { ApolloProvider} from 'react-apollo';
 
 //Import React
 import React from 'react';
 
- const client = new ApolloClient({
-  uri: "http://192.168.1.68:4000/graphql"
- });
+
 
 // Import React Navigation
 import {createStackNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
@@ -23,7 +21,7 @@ import {createStackNavigator, createAppContainer, createSwitchNavigator} from 'r
 export default class App extends React.Component {
   render() {
     return (
-      <ApolloProvider client={client}>
+      <ApolloProvider client={apolloClient}>
         <AppContainer />
       </ApolloProvider>
     )

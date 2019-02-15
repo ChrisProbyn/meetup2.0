@@ -1,14 +1,10 @@
 import React, {Component} from 'react';
 import {View, Button, Alert, Text} from 'react-native';
 import { Query } from "react-apollo";
-import ApolloClient from "apollo-boost"
 import gql from "graphql-tag";
 import t from "tcomb-form-native";
-
+import apolloClient from './apolloClient.js'
 //Change to current local IP Address
-const apolloClient = new ApolloClient({
-  uri: "http://192.168.1.68:4000/graphql"
-});
 
 //use tcomb format to structure login form
 const Form = t.form.Form;

@@ -5,11 +5,9 @@ import * as firebase from 'firebase';
 import firebaseConfig from './firebase.js'
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import ApolloClient from "apollo-boost"
 
-const apolloClient = new ApolloClient({
-  uri: "http://192.168.1.68:4000/graphql"
-});
+import apolloClient from './apolloClient.js'
+
 
 firebase.initializeApp(firebaseConfig);
 

@@ -1,12 +1,10 @@
 import React, {Component} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
 import gql from "graphql-tag";
-import ApolloClient from "apollo-boost"
 
+import apolloClient from './apolloClient.js'
 // Set Apollo IP Address
-const apolloClient = new ApolloClient({
-  uri: "http://192.168.1.68:4000/graphql"
- });
+
 
 export default class CreateGroup extends Component {
   static navigationOptions = {
