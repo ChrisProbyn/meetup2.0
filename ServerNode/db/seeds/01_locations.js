@@ -10,7 +10,7 @@ exports.seed = function(knex, Promise) {
         {id: 1003, lat: 49.281372, long: -123.114542},
         {id: 1004, lat: 49.2802, long: -123.1219},
         {id: 1005, lat: 49.2757, long: -123.1199},
-        
+        {id: 1006, lat: 49.2757, long: -123.1199},
       ]);
     });
 };

@@ -5,7 +5,6 @@ import gql from "graphql-tag";
 import apolloClient from './apolloClient.js'
 // Set Apollo IP Address
 
-
 export default class CreateGroup extends Component {
   static navigationOptions = {
     headerStyle: {backgroundColor: "#29293d"},

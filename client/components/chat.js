@@ -5,7 +5,6 @@ import * as firebase from 'firebase';
 import firebaseConfig from './firebase.js'
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-
 import apolloClient from './apolloClient.js'
 
 

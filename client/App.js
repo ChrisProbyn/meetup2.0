@@ -14,7 +14,6 @@ import { ApolloProvider} from 'react-apollo';
 import React from 'react';
 
 
-
 // Import React Navigation
 import {createStackNavigator, createAppContainer, createSwitchNavigator} from 'react-navigation';
 

@@ -9,6 +9,7 @@ exports.seed = function(knex, Promise) {
         {id: 8001, group_id: 3001, user_id: 6000},
         {id: 8002, group_id: 3000, user_id: 6001},
         {id: 8003, group_id: 3000, user_id: 6002},
+        {id: 8004, group_id: 3001, user_id: 6003},
       ]);
     });
 };

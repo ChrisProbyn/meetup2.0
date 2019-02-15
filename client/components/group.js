@@ -7,7 +7,6 @@ import gql from "graphql-tag";
 import apolloClient from './apolloClient.js'
 // Set Apollo IP Address
 
-
 export default class Group extends Component {
   state = {
     location: null,
@@ -83,7 +82,7 @@ export default class Group extends Component {
         }
         `
       })
-      .then(result => {console.log(result)})
+      .then(result => {result})
       .catch(error => { console.log(error) });
     }
   }
